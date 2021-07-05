@@ -3,11 +3,11 @@ name: Test Rebol Whitespacers
 on:
   push:
     branches: [
-      master
+      main
     ]
   pull_request:
     branches: [
-      master
+      main
     ]
   workflow_dispatch:  # Allows running this workflow manually from Actions tab
 
@@ -102,7 +102,7 @@ jobs:
     # 
     - name: Ren-C Whitespacer Test
       run: |
-        r3 ren-c/whitespace.reb
+        r3 whitespace.reb
 
 
     # The original Rebol version written circa 2010 ran in the pre-open-source
@@ -115,6 +115,5 @@ jobs:
       with:
         checked: ${{ matrix.checked }}
         script: |
-          print ["The directory is" what-dir]
           do https://raw.githubusercontent.com/metaeducation/ren-c/master/scripts/redbol.reb
-          do %rebol/whitespace.reb
+          do %historical/whitespace-old.reb

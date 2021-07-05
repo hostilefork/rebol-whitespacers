@@ -1,9 +1,9 @@
 This is an interpreter for the Whitespace language, using the Ren-C branch
 of Rebol3:
 
-    http://compsoc.dur.ac.uk/whitespace/
+  http://compsoc.dur.ac.uk/whitespace/
 
-    https://github.com/metaeducation/ren-c
+  https://github.com/metaeducation/ren-c
 
 Although Whitespace was invented as a joke, making a working implementation
 has much of the spirit of a "real" programming task.  The existence of
