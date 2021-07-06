@@ -15,9 +15,19 @@ Rebol [
     Level: 'intermediate
 
     Description: {
-        This is an interpreter for the Whitespace language:
+        This is an interpreter for the Whitespace language in the Ren-C branch
+        of the Rebol 3 language:
 
         http://compsoc.dur.ac.uk/whitespace/
+
+        What makes it somewhat unique is that it does some fairly accessible
+        bending of the the language itself so that it acts like a language
+        that was designed for making interpreters for languages that are
+        "Whitespace-like".
+
+        Due to being specification-driven in a homoiconic language (where data
+        is code and code is data), it gains advantages in things like
+        documentation generation.
     }
 
     Usage: {
@@ -45,142 +55,8 @@ Rebol [
 ]
 
 
-=== WHITESPACER IMPLEMENTATION DIALECT ===
-
-; Our goal is to streamline the implementation by bending Ren-C into something
-; that feels like *a programming language designed specially for writing
-; whitespace implementations*.  This methodology for putting the parts of the
-; language to new uses is called "dialecting".
-
-category: func [
-    return: [object!]
-    definition [block!]
-    <local> obj
-][
-    ; We want the category to create an object, but we don't want the fields of
-    ; the object to be binding inside the function bodies defined in the
-    ; category.  e.g. just because the category has an ADD operation, we don't
-    ; want to overwrite the binding of Rebol's ADD which we would use.
-    ;
-    ; !!! This is part of a broad current open design question, being actively
-    ; thought through:
-    ;
-    ; https://forum.rebol.info/t/1442
-    ;
-    ; It should have a turnkey solution like what this code is doing.  We just
-    ; don't know exactly what to call it.
-
-    ; First make an empty object with all the SET-WORD!s at the top level
-    ;
-    obj: make object! collect [
-        for-each item definition [
-            keep try ^(match set-word! item)
-        ]
-        keep [rule:]  ; we're going to add a rule
-        keep [~unset~]
-    ]
-
-    ; Now, run a block which is a copy where all the SET-WORD!s are bound
-    ; into the object, but only those top level set-words...nothing else.
-    ;
-    do map-each item definition [
-        (in obj try match set-word! item) else [item]
-    ]
-
-    ; We should really know which things are operations to ask them for their
-    ; rule contribution.  But just assume any OBJECT! is an operation.
-    ;
-    obj.rule: reduce [
-        obj.imp
-        collect [
-            for-each [key val] obj [
-                if key == 'rule [continue]  ; what we're setting...
-                if object? val [
-                    keep val.rule
-                    keep [|]
-                ]
-            ]
-            keep [false]
-        ]
-    ]
-
-    return obj
-]
-
-operation: enfixed func [
-    return: [object!]
-    'name [set-word!]
-    spec [block!]
-    body [block!]
-    <with> param
-    <local> groups args sw t
-][
-    args: copy []  ; arguments to generated FUNC are gleaned from the spec
-    groups: copy []  ; used in the COMPOSE of the instruction's arguments
-
-    ; We want the operation to be a function (and be able to bind to it as
-    ; if it is one).  But there's additional information we want to glue on.
-    ; Historical Rebol doesn't have the facility to add data fields to
-    ; functions as if they were objects (like JavaScript can).  But Ren-C
-    ; offers a connected "meta" object.  We could make `some-func.field`
-    ; notation access the associated meta fields, though this would be
-    ; an inconsistent syntax.
-    ;
-    ; Temporarily just return an object, but name the action inside it the
-    ; same thing as what we capture from the callsite as the SET-WORD!.
-    ;
-    ; Note: Since this operation is quoting the SET-WORD! on the left, the
-    ; evaluator isn't doing an assignment.  We have to do the SET here.
-    ;
-    set name make object! compose [
-        description: ensure text! first spec
-
-        command: collect [
-            for-next pos next spec [
-                any [
-                    all [  ; Whitespace operations can take `Number` or `Label`
-                        block? pos.1
-                        uparse? pos.1 [sw: set-word!, t: word!]
-                        find [Number Label] ^t
-                        keep ^t
-                        elide if not empty? groups [
-                            fail "Mechanism for > 1 operation parameter TBD"
-                        ]
-                        append args ^(to word! sw)
-                        append groups [(param)]
-                    ]
-                    all [  ; Words specifying the characters
-                        find [space tab lf] ^pos.1
-                        keep ^pos.1
-                    ]
-                    all [  ; If we hit a tag, assume we're starting FUNC spec
-                        tag? pos.1
-                        keep pos  ; keep all the rest (e.g. <local>, <static>)
-                        break
-                    ]
-                    fail ["Malformed operation parameter:" mold pos.1]
-                ]
-            ]
-        ]
-
-        (elide group*: if not empty? args ['(param)])
-
-        ; for `push: operation ...` this will be `push.push`, reasoning above
-        ;
-        ; !!! We add RETURN NULL here to make that the default if a jump
-        ; address is not returned.  However, using a return value may not be
-        ; the ideal way of doing this (vs. calling a JUMP-TO method on some
-        ; object representing the virtual machine).
-        ;
-        (name) func args compose [((body)), return null]
-
-        rule: reduce [
-            command compose/deep '(
-                instruction: compose [(to word! name) ((groups))]
-            )
-        ]
-    ]
-]
+do %ws-runtime.reb  ; declarations the stack and other structures
+do %ws-dialect.reb  ; defines the CATEGORY and OPERATION used below
 
 
 === CONTROL SEQUENCE DEFINITIONS ===
@@ -478,181 +354,6 @@ IO: category [
         tab tab
     ][
         print "READ-NUMBER-TO-LOCATION NOT IMPLEMENTED"
-    ]
-]
-
-
-=== RUNTIME VIRTUAL MACHINE OPERATIONS ===
-
-; start out with an empty stack
-stack: []
-
-; callstack is separate from data stack
-callstack: []
-
-; a map is probably not ideal
-heap: make map! []
-
-; from Label # to program character index
-labels: make map! []
-
-binary-string-to-int: func [s [text!] <local> pad] [
-    ; debase makes bytes, so to use it we must pad to a
-    ; multiple of 8 bits.  better way?
-    pad: unspaced array/initial (8 - modulo (length of s) 8) #"0"
-    return to-integer debase/base unspaced [pad s] 2
-]
-
-whitespace-number-to-int: func [w [text!] <local> bin] [
-    ; first character indicates sign
-    sign: either space == first w [1] [-1]
-
-    ; rest is binary value
-    bin: copy next w
-    replace/all bin space "0"
-    replace/all bin tab "1"
-    replace/all bin lf ""
-    return sign * (binary-string-to-int bin)
-]
-
-lookup-label-offset: func [label [integer!]] [
-    address: select labels label
-    if null? address [
-        print ["RUNTIME ERROR: Jump to undefined Label #" label]
-        quit 1
-    ]
-    return address
-]
-
-
-=== REBOL PARSE-BASED INTERPRETER FOR WHITESPACE LANGUAGE ===
-
-; if the number rule matches, then param will contain the
-; integer value of the decoded result
-Number: [
-    encoded: across [some [space | tab] lf] (
-        param: whitespace-number-to-int encoded
-    )
-]
-
-; according to the spec, labels are simply [lf] terminated
-; lists of spaces and tabs.  So treating them as Numbers is fine.
-Label: Number
-
-pass: 1
-
-max-execution-steps: 1000
-debug-steps: true
-extended-debug-steps: true
-
-whitespace-vm-rule: [
-    ; capture start of program
-    program-start: <here>
-
-    ; initialize count
-    (execution-steps: 0)
-
-    ; begin matching parse patterns
-    while [
-        not end
-
-        (
-            if (execution-steps > max-execution-steps) [
-                print ["MORE THAN" execution-steps "INSTRUCTIONS EXECUTED"]
-                quit 1
-            ]
-        )
-
-        instruction-start: <here>  ;  current parse position is start address
-        [
-            Stack-Manipulation.rule
-            | Arithmetic.rule
-            | Heap-Access.rule
-            | Flow-Control.rule
-            | IO.rule
-            | (fail "UNKNOWN OPERATION")
-        ]
-        instruction-end: <here>  ; also capture position at end of instruction
-
-        ; execute the VM code and optionally give us debug output
-        (
-            ; This debugging output is helpful if there are malfunctions
-            if extended-debug-steps [
-                print [
-                    "S:" offset? program-start instruction-start
-                    "E:" offset? program-start instruction-end
-                    "->"
-                    mold copy/part instruction-start instruction-end
-                ]
-            ]
-
-            ; default to whatever is next, which is where we
-            ; were before this code
-            next-instruction: instruction-end
-
-            ; !!! The original implementation put the functions to handle the
-            ; opcodes in global scope, so when an instruction said something
-            ; like [jump-if-zero] it would be found.  Now the functions are
-            ; inside one of the category objects.  As a temporary measure to
-            ; keep things working, just try binding the instruction in all
-            ; the category objects.
-            ;
-            ; !!! Also, this isn't going to give you an ACTION!, it gives an
-            ; OBJECT! which has an action as a member.  So you have to pick
-            ; the action out of it.  Very ugly...fix this soon!
-
-            word: take instruction
-
-            word: any [
-                in Stack-Manipulation word
-                in Arithmetic word
-                in Heap-Access word
-                in Flow-Control word
-                in IO word
-            ] else [
-                fail "instruction WORD! not found in any of the categories"
-            ]
-
-            ; !!! Furthering the hackishness of the moment, we bind to an
-            ; action in the object with a field name the same as the word.
-            ; So `push.push`, or `add.add`.  See OPERATION for a description
-            ; of why we're doing this for now.
-            ;
-            word: non null in get word word
-            ensure action! get word
-            insert instruction ^word
-
-            either 'mark-location == word [
-                if (pass == 1) [
-                    if debug-steps [
-                        print ["(" mold instruction ")"]
-                    ]
-
-                    ; the first pass does the Label markings...
-                    ensure null do instruction
-                ]
-            ][
-                if (pass == 2) [
-                    if debug-steps [
-                        print ["(" mold instruction ")"]
-                    ]
-
-                    ; most instructions run on the second pass...
-                    result: do instruction
-
-                    if not null? result [
-                        ; if the instruction returned a value, use
-                        ; as the offset of the next instruction to execute
-                        next-instruction: skip program-start result
-                    ]
-
-                    execution-steps: execution-steps + 1
-                ]
-            ]
-        )
-
-        ; Set the parse position to whatever we set in the code above
-        seek (next-instruction)
     ]
 ]
 
