@@ -7,8 +7,8 @@ Rebol [
     License: 'mit
 
     File: %whitespace.reb
-    Date: 10-Jul-2010
-    Version: 0.2.0
+    Date: 31-Jan-2019
+    Version: 0.3.0
 
     ; Header conventions: http://www.rebol.org/one-click-submission-help.r
     Type: 'fun
@@ -21,9 +21,16 @@ Rebol [
     }
 
     Usage: {
-        Run it.  Program is currently hardcoded into a variable, but
-        I'll change it to take command line parameters.  Also, I should
-        add a switch to generate documentation.
+        Run with the argument of a file that you wish to process.  The
+        extension determines the handling:
+
+        .ws  - An "official" whitespace program, where the instructions are the
+               actual ASCII codes for SPACE, TAB, and LF.
+
+        .wsw - Format based on the actual *words* `space`, `tab` and `lf`.
+               Semicolons are used for comments to end of line.
+
+        (.wsa for Whitespace Assembler format is not yet supported)
     }
 
     History: [
@@ -31,17 +38,19 @@ Rebol [
 
         0.2.0 [10-Jul-2010 {Public release as part of a collection of
         whitespace interpreters in various languages}]
+
+        0.3.0 [31-Jan-2019 {Converted to Ren-C with more ambitious concept
+        of dialecting the spec blended with the instruction handling code.}]
     ]
 ]
 
-;
-; WHITESPACER IMPLEMENTATION DIALECT
-;
+
+=== WHITESPACER IMPLEMENTATION DIALECT ===
+
 ; Our goal is to streamline the implementation by bending Ren-C into something
 ; that feels like *a programming language designed specially for writing
 ; whitespace implementations*.  This methodology for putting the parts of the
 ; language to new uses is called "dialecting".
-;
 
 category: func [
     return: [object!]
@@ -174,11 +183,9 @@ operation: enfixed func [
 ]
 
 
-;
-; CONTROL SEQUENCE DEFINITIONS
-;
-;     http://compsoc.dur.ac.uk/whitespace/tutorial.php
-;
+=== CONTROL SEQUENCE DEFINITIONS ===
+
+; http://compsoc.dur.ac.uk/whitespace/tutorial.php
 
 Stack-Manipulation: category [
     IMP: [space]
@@ -475,9 +482,7 @@ IO: category [
 ]
 
 
-;
-; RUNTIME VIRTUAL MACHINE OPERATIONS
-;
+=== RUNTIME VIRTUAL MACHINE OPERATIONS ===
 
 ; start out with an empty stack
 stack: []
@@ -520,10 +525,7 @@ lookup-label-offset: func [label [integer!]] [
 ]
 
 
-
-;
-; REBOL PARSE-BASED INTERPRETER FOR WHITESPACE LANGUAGE
-;
+=== REBOL PARSE-BASED INTERPRETER FOR WHITESPACE LANGUAGE ===
 
 ; if the number rule matches, then param will contain the
 ; integer value of the decoded result
@@ -655,77 +657,31 @@ whitespace-vm-rule: [
 ]
 
 
-;
-; SAMPLE PROGRAM
-;
-; Here is an annotated example of a program which counts from 1
-; to 10, outputting the current value as it goes.
-;
-; This program was given as an example in the whitespace docs:
-;
-;     http://compsoc.dur.ac.uk/whitespace/tutorial.php
-;
-; Note that space, tab, lf are defined in Rebol.  The UNSPACED
-; operation turns this into a bona-fide string.  But it's "easier
-; to read" (or at least, to add comments) when we start out as a
-; block of symbols we reduce to characters.
-;
+=== LOAD THE SOURCE INTO PROGRAM VARIABLE ===
 
-program: unspaced [
+strict: false  ; !!! TBD
 
-    ; Put a 1 on the stack
-    space space space tab lf
+if not system.options.args.1 [
+    fail "No input file given"
+]
 
-    ; Set a Label at this point
-    lf space space space tab space space  space space tab tab lf
+filename: to file! system.options.args.1
 
-    ; Duplicate the top stack item
-    space lf space
-
-    ; Output the current value
-    tab lf space tab
-
-    ; Put 10 (newline) on the stack...
-    space space space tab space tab space lf
-
-    ; ...and output the newline
-    tab lf space space
-
-    ; Put a 1 on the stack
-    space space space tab lf
-
-    ; Addition. This increments our current value.
-    tab space space space
-
-    ; Duplicate that value so we can test it
-    space lf space
-
-    ; Push 11 onto the stack
-    space space space tab space tab tab lf
-
-    ; Subtraction. So if we've reached the end, we have a zero on the stack.
-    tab space space tab
-
-    ; If we have a zero, jump to the end
-    lf tab space space tab space space  space tab space tab lf
-
-    ; Jump to the start
-    lf space lf space tab space  space space space tab tab lf
-
-    ; Set the end Label
-    lf space space space tab space  space space tab space tab lf
-
-    ; Discard our accumulator, to be tidy
-    space lf lf
-
-    ; Finish!
-    lf lf lf
+program: uparse filename [
+    thru [
+        ".ws" end (as text! read filename)
+        | ".wsw" end (unspaced load filename)  ; "whitespace words"
+        | ".wsa" end (fail "WSA support not implemented yet")
+    ]
+] else [
+    if strict [
+        fail "Only `.ws`, `.wsa`, and `.wsw` formats supported in strict mode"
+    ]
+    as text! read filename  ; tolerate 
 ]
 
 
-;
-; QUICK CHECK FOR VALID INPUT
-;
+=== QUICK CHECK FOR VALID INPUT ===
 
 separator: "---"
 
@@ -734,13 +690,12 @@ print separator
 print mold program
 print separator
 
-;
-; LABEL SCANNING PASS
-;
+
+=== LABEL SCANNING PASS ===
+
 ; We have to scan the program for labels before we run it
 ; Also this tells us if all the constructions are valid
 ; before we start running
-;
 
 print "LABEL SCAN PHASE"
 
@@ -753,13 +708,12 @@ uparse program whitespace-vm-rule else [
 print mold labels
 print separator
 
-;
-; PROGRAM EXECUTION PASS
-;
+
+=== PROGRAM EXECUTION PASS ===
+
 ; The Rebol parse dialect has the flexibility to do arbitrary
 ; seeks to locations in the input.  This makes it possible to
 ; apply it to a language like whitespace
-;
 
 pass: 2
 uparse program whitespace-vm-rule else [

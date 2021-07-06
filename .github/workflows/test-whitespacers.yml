@@ -91,7 +91,7 @@ jobs:
 
   #====# TEST STEPS #==========================================================#
 
-    # The tests are designed to call QUIT and return 1 status on failure, with
+    # The tests are designed to QUIT and return 1 status on failure, with
     # 0 returned on success.
 
 
@@ -100,9 +100,14 @@ jobs:
     # sort of "domain specific language" for writing "Whitespace-like"
     # interpreters.
     # 
-    - name: Ren-C Whitespacer Test
+    - name: Ren-C Whitespacer Test, .ws Format
       run: |
-        r3 whitespace.reb
+        r3 whitespace.reb examples/tutorial.ws
+
+
+    - name: Ren-C Whitespacer Test, .wsw Format
+      run: |
+        r3 whitespace.reb examples/tutorial.wsw
 
 
     # The original Rebol version written circa 2010 ran in the pre-open-source
@@ -116,4 +121,4 @@ jobs:
         checked: ${{ matrix.checked }}
         script: |
           do https://raw.githubusercontent.com/metaeducation/ren-c/master/scripts/redbol.reb
-          do %historical/whitespace-old.reb
+          do %historical/whitespace-old.reb  ; has program hardcoded in it
