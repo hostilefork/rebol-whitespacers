@@ -99,7 +99,7 @@ operation: enfixed func [
                 any [
                     all [  ; Whitespace operations can take `Number` or `Label`
                         block? pos.1
-                        uparse? pos.1 [sw: set-word!, t: word!]
+                        parse? pos.1 [sw: set-word!, t: word!]
                         find [Number Label] ^t
                         keep ^t
                         elide if not empty? groups [

@@ -201,9 +201,9 @@ Heap-Access: category [
         let value: take stack
         let address: take stack
         let pos: select heap address
-        either pos [
+        if pos [
             poke pos 1 value
-        ][
+        ] else [
             repend heap [value address]
         ]
 
@@ -242,9 +242,9 @@ Flow-Control: category [
         let address: offset? program-start instruction-end
 
         let pos: select labels label
-        either pos [
+        if pos [
             poke pos 1 address
-        ][
+        ] else [
             repend labels [label address]
         ]
     ]
@@ -368,7 +368,7 @@ if not system.options.args.1 [
 
 filename: to file! system.options.args.1
 
-program: uparse filename [
+program: parse filename [
     thru [
         ".ws" end (as text! read filename)
         | ".wsw" end (unspaced load filename)  ; "whitespace words"
@@ -401,9 +401,8 @@ print separator
 print "LABEL SCAN PHASE"
 
 pass: 1
-uparse program whitespace-vm-rule else [
-    print "INVALID INPUT"
-    quit 1
+parse program whitespace-vm-rule else [
+    fail "INVALID INPUT"
 ]
 
 print mold labels
@@ -417,9 +416,8 @@ print separator
 ; apply it to a language like whitespace
 
 pass: 2
-uparse program whitespace-vm-rule else [
-    print "UNEXPECTED TERMINATION (Internal Error)"
-    quit 1
+parse program whitespace-vm-rule else [
+    fail "UNEXPECTED TERMINATION (Internal Error)"
 ]
 
 print "Program End Encountered"
