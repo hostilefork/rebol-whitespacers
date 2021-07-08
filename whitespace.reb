@@ -330,7 +330,11 @@ IO: category [
         {Output the character at the top of the stack}
         space space
     ][
-        print [as issue! first stack]
+        ; Note: ISSUE! is being merged with CHAR! to be something called TOKEN!
+        ; So `#a` acts as what `#"a"` was in historical Rebol.  This is a work
+        ; in progress and the renaming has not yet been done.
+        ;
+        write-stdout make issue! first stack
         take stack
     ]
 
@@ -338,7 +342,10 @@ IO: category [
         {Output the number at the top of the stack}
         space tab
     ][
-        print [first stack]
+        ; When a number is written out, there is no newline.  So we use
+        ; WRITE-STDOUT of the string conversion instead of PRINT.
+        ;
+        write-stdout to text! first stack
         take stack
     ]
 
