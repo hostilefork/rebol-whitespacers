@@ -89,26 +89,55 @@ jobs:
         checked: ${{ matrix.checked }}
 
 
-  #====# TEST STEPS #==========================================================#
-
-    # The tests are designed to QUIT and return 1 status on failure, with
-    # 0 returned on success.
-
+  #====# REN-C VERSION TEST STEPS #===========================================#
 
     # Ren-C is an aggressively redesigned version of the open-source Rebol
     # R3-Alpha code.  The whitespace script that runs on Ren-C establishes a
     # sort of "domain specific language" for writing "Whitespace-like"
     # interpreters.
     # 
-    - name: Ren-C Whitespacer Test, .ws Format
-      run: |
-        r3 whitespace.reb examples/tutorial.ws
+    # If the interpreter FAILs due to an internal error it will return an exit
+    # code of 1, and 0 returned on success.  But we also want to check the
+    # output matches what was expected.  To do that in a cross-platform way,
+    # use Ren-C CALL to invoke a Ren-C subprocess to run the interpreter,
+    # save the output to a string, and compare to a known result.
+
+    - name: Original Count-to-10 Tutorial Test, .ws Format
+      uses: metaeducation/ren-c-action@release
+      with:
+        checked: ${{ matrix.checked }}
+        script: |
+          expected: as text! read %examples/tutorial.out
+          actual: ""
+          call/output [
+            (system.options.boot) whitespace.reb examples/tutorial.ws
+          ] actual
+          write-stdout actual
+          if expected <> actual [
+            print "!!! OUTPUT MISMATCH, EXPECTED"
+            print expected
+            quit 1
+          ]
+
+    - name: Original Count-to-10 Tutorial Test, .wsw Format
+      uses: metaeducation/ren-c-action@release
+      with:
+        checked: ${{ matrix.checked }}
+        script: |
+          expected: as text! read %examples/tutorial.out
+          actual: ""
+          call/output [
+            (system.options.boot) whitespace.reb examples/tutorial.wsw
+          ] actual
+          write-stdout actual
+          if expected <> actual [
+            print "!!! OUTPUT MISMATCH, EXPECTED"
+            print expected
+            quit 1
+          ]
 
 
-    - name: Ren-C Whitespacer Test, .wsw Format
-      run: |
-        r3 whitespace.reb examples/tutorial.wsw
-
+  #====# "REDBOL" VERSION TEST STEPS #========================================#
 
     # The original Rebol version written circa 2010 ran in the pre-open-source
     # "R3-Alpha" interpreter.  That less interesting version still runs today
