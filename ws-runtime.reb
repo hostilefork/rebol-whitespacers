@@ -23,6 +23,13 @@ parse?: :uparse?
 
 === RUNTIME VIRTUAL MACHINE OPERATIONS ===
 
+; 0 - no output besides program output (print statements)
+; 1 - print what phase the system is running in
+; 2 - show individual instructions
+; 3 - show beginning and end series positions for each step
+;
+verbose: 0
+
 ; start out with an empty stack
 stack: []
 
@@ -81,8 +88,6 @@ Label: Number
 pass: 1
 
 max-execution-steps: 1000
-debug-steps: true
-extended-debug-steps: true
 
 whitespace-vm-rule: [
     ; capture start of program
@@ -116,7 +121,7 @@ whitespace-vm-rule: [
         ; execute the VM code and optionally give us debug output
         (
             ; This debugging output is helpful if there are malfunctions
-            if extended-debug-steps [
+            if verbose >= 3 [
                 print [
                     "S:" offset? program-start instruction-start
                     "E:" offset? program-start instruction-end
@@ -163,7 +168,7 @@ whitespace-vm-rule: [
 
             either 'mark-location == word [
                 if (pass == 1) [
-                    if debug-steps [
+                    if verbose >= 2 [
                         print ["(" mold instruction ")"]
                     ]
 
@@ -172,7 +177,7 @@ whitespace-vm-rule: [
                 ]
             ][
                 if (pass == 2) [
-                    if debug-steps [
+                    if verbose >= 2 [
                         print ["(" mold instruction ")"]
                     ]
 

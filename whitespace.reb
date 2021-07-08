@@ -365,15 +365,47 @@ IO: category [
 ]
 
 
-=== LOAD THE SOURCE INTO PROGRAM VARIABLE ===
+=== PROCESS COMMAND-LINE ARGUMENTS ===
 
-strict: false  ; !!! TBD
+verbose: 0
+strict: false
+filename: null
 
-if not system.options.args.1 [
+; Note that system.script.args is the arguments given to the script, e.g. if
+; you ran it from an interpreter with:
+;
+;     >> do/args %whitespace.reb ["--verbose" "1" "examples/tutorial.ws"]
+;
+; The system.options.args would reflect the arguments the interpreter itself
+; had been started up with.  These are the same when running the script from
+; the command line.
+;
+parse system.script.args [while [not end ||
+    ["-v" | "--verbose"]
+        verbose: [
+            "0" (0) | "1" (1) | "2" (2) | "3" (3)
+            | (fail "--verbose must be 0, 1, 2, or 3")
+        ]
+    |
+    "--strict" (strict: true)
+    |
+    into text! [
+        ["--" bad: <here>]
+        (fail ["Unknown command line option:" bad])
+    ]
+    |
+    (if filename [
+        fail "Only one filename allowed on command line at present"
+    ])
+    filename: to-file/ text!
+]]
+
+if not filename [
     fail "No input file given"
 ]
 
-filename: to file! system.options.args.1
+
+=== LOAD THE SOURCE INTO PROGRAM VARIABLE ===
 
 program: parse filename [
     thru [
@@ -393,10 +425,12 @@ program: parse filename [
 
 separator: "---"
 
-print "WHITESPACE INTERPRETER FOR PROGRAM:"
-print separator
-print mold program
-print separator
+if verbose >= 1 [
+    print "WHITESPACE INTERPRETER FOR PROGRAM:"
+    print separator
+    print mold program
+    print separator
+]
 
 
 === LABEL SCANNING PASS ===
@@ -405,15 +439,19 @@ print separator
 ; Also this tells us if all the constructions are valid
 ; before we start running
 
-print "LABEL SCAN PHASE"
+if verbose >= 1 [
+    print "LABEL SCAN PHASE"
+]
 
 pass: 1
 parse program whitespace-vm-rule else [
     fail "INVALID INPUT"
 ]
 
-print mold labels
-print separator
+if verbose >= 1 [
+    print mold labels
+    print separator
+]
 
 
 === PROGRAM EXECUTION PASS ===
@@ -427,9 +465,11 @@ parse program whitespace-vm-rule else [
     fail "UNEXPECTED TERMINATION (Internal Error)"
 ]
 
-print "Program End Encountered"
-print ["stack:" mold stack]
-print ["callstack:" mold callstack]
-print ["heap:" mold heap]
+if verbose >= 1 [
+    print "Program End Encountered"
+    print ["stack:" mold stack]
+    print ["callstack:" mold callstack]
+    print ["heap:" mold heap]
+]
 
 quit 0  ; signal success to calling shell via 0 exit code
