@@ -194,30 +194,17 @@ Heap-Access: category [
         {Store}
         space
     ][
-        ; hmmm... are value and address left on the stack?
-        ; the spec does not explicitly say they are removed
-        ; but the spec is pretty liberal about not mentioning it
-
-        let value: take stack
-        let address: take stack
-        let pos: select heap address
-        if pos [
-            poke pos 1 value
-        ] else [
-            repend heap [value address]
-        ]
-
-        take/part stack 2
+        let value: take stack  ; spec does not explicitly specify removal
+        let address: take stack  ; (same)
+        heap.(address): value
     ]
 
     retrieve: operation [
         {Retrieve}
         tab
     ][
-        ; again, the spec doesn't explicitly say to remove from stack
-        let address: take stack
+        let address: take stack  ; spec does not explicitly specify removal
         let value: select heap address
-        print ["retrieving" value "to stack from address:" address]
         insert stack value
     ]
 ]
