@@ -117,12 +117,12 @@ Stack-Manipulation: category [
 
 do-arithmetic: func [operator [word!]] [
     ; note the first item pushed is the left of the operation.
-    ; could do infix except Rebol's modulo is prefix (mod a b)
 
-    insert stack do reduce [
-        operator second stack first stack
+    let right: take stack
+    let left: take stack
+    insert stack do reduce [  ; we could also `reeval operator left right`
+        operator left right
     ]
-    take/part next stack 2
 ]
 
 
