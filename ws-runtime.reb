@@ -61,9 +61,9 @@ whitespace-number-to-int: func [w [text!] <local> bin] [
     return sign * (binary-string-to-int bin)
 ]
 
-lookup-label-offset: func [label [integer!]] [
+lookup-label-offset: func [label [text!]] [
     return select labels label else [
-        fail ["RUNTIME ERROR: Jump to undefined Label #" label]
+        fail ["RUNTIME ERROR: Jump to undefined Label" mold label]
     ]
 ]
 
@@ -78,9 +78,13 @@ Number: [
     )
 ]
 
-; according to the spec, labels are simply [lf] terminated
-; lists of spaces and tabs.  So treating them as Numbers is fine.
-Label: Number
+; According to the spec, labels are simply [lf] terminated lists of spaces and
+; tabs.  We don't want to use a Number rule for them--though--because they
+; can be unreasonably long.
+;
+Label: [
+    param: across [some [space | tab] lf]
+]
 
 pass: 1
 
