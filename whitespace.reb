@@ -94,7 +94,7 @@ Stack-Manipulation: category [
 
     swap-top-2: operation [
         {Swap the top two items on the stack}
-        tab tab
+        lf tab
     ][
         move/part stack 1 1
     ]
