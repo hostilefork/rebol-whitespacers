@@ -223,12 +223,13 @@ Flow-Control: category [
     mark-location: operation [
         {Mark a location in the program}
         space space [label: Label]
+        <local> address pos  ; could use LET, but test expanded spec feature
     ][
         ; now we capture the end of this instruction...
         ;
-        let address: offset? program-start instruction-end
+        address: offset? program-start instruction-end
 
-        let pos: select labels label
+        pos: select labels label
         if pos [
             poke pos 1 address
         ] else [

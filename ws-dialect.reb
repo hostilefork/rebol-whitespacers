@@ -113,7 +113,6 @@ operation: enfixed func [
                     ]
                     all [  ; If we hit a tag, assume we're starting FUNC spec
                         tag? pos.1
-                        keep pos  ; keep all the rest (e.g. <local>, <static>)
                         break
                     ]
                     fail ["Malformed operation parameter:" mold pos.1]
