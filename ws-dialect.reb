@@ -49,18 +49,17 @@ category: func [
     ; We should really know which things are operations to ask them for their
     ; rule contribution.  But just assume any OBJECT! is an operation.
     ;
-    obj.rule: reduce [
-        obj.imp
-        collect [
-            for-each [key val] obj [
-                if key == 'rule [continue]  ; what we're setting...
-                if object? val [
-                    keep val.rule
-                    keep [|]
-                ]
+    obj.rule: collect [
+        keep obj.imp
+        keep [||]  ; inline sequencing operator
+        for-each [key val] obj [
+            if key == 'rule [continue]  ; what we're setting...
+            if object? val [
+                keep val.rule
+                keep [|]
             ]
-            keep [false]
         ]
+        keep [false]  ; have to have something to the right of the last `|` 
     ]
 
     return obj
@@ -133,10 +132,10 @@ operation: enfixed func [
         ;
         (name) func args compose [((body)), return null]
 
-        rule: reduce [
-            command compose/deep '(
+        rule: compose [
+            ((command)) (compose/deep '(
                 instruction: compose [(to word! name) ((groups))]
-            )
+            ))
         ]
     ]
 ]
