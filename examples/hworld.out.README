@@ -1,0 +1,2 @@
+Note: the hworld sample circulating on the internet writes 
+out CR LF, on purpose.  Hence hworld.out has CR LF in it.
