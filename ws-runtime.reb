@@ -88,7 +88,7 @@ Label: [
 
 pass: 1
 
-max-execution-steps: 1000
+max-steps: null
 
 whitespace-vm-rule: [
     ; capture start of program
@@ -102,8 +102,8 @@ whitespace-vm-rule: [
         not end
 
         (
-            if (execution-steps > max-execution-steps) [
-                print ["MORE THAN" execution-steps "INSTRUCTIONS EXECUTED"]
+            if max-steps and (execution-steps > max-steps) [
+                print ["MORE THAN" max-steps "INSTRUCTIONS EXECUTED"]
                 quit 1
             ]
         )

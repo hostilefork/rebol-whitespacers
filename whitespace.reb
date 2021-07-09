@@ -372,6 +372,8 @@ parse system.script.args [while [not end ||
     |
     "--strict" (strict: true)
     |
+    "--max-steps" max-steps: into text! [integer!]
+    |
     into text! [
         ["--" bad: <here>]
         (fail ["Unknown command line option:" bad])
