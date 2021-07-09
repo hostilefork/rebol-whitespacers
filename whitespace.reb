@@ -341,7 +341,9 @@ IO: category [
         {Read a number to the location given by the top of the stack}
         tab tab
     ][
-        print "READ-NUMBER-TO-LOCATION NOT IMPLEMENTED"
+        let address: take stack
+        let num: ask integer! else [fail "Integer Input Was Required"]
+        heap.(address): num
     ]
 ]
 
