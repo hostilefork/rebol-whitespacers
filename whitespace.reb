@@ -408,6 +408,17 @@ program: parse filename [
 ]
 
 
+=== REMOVE NON-WHITESPACE CHARACTERS FROM PROGRAM ===
+
+; The spec of the whitespace language is supposed to skip over non-whitespace.
+; If those characters are left in the program, it is a fairly high overhead
+; for all the code which does decoding to filter them out.  Pre-filter.
+
+remove-each ch program [
+    all [ch != space, ch != tab, ch != lf]
+]
+
+
 === QUICK CHECK FOR VALID INPUT ===
 
 separator: "---"
