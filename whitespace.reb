@@ -274,10 +274,9 @@ Flow-Control: category [
         {End a subroutine and transfer control back to the caller}
         tab lf
     ][
-        if empty? callers [
+        return take callstack else [
             fail "RUNTIME ERROR: return with no callstack!"
         ]
-        return take callstack
     ]
 
     end-program: operation [
