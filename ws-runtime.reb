@@ -197,6 +197,6 @@ whitespace-vm-rule: [
         )
 
         ; Set the parse position to whatever we set in the code above
-        seek (next-instruction)
+        seek (try next-instruction)
     ]
 ]
