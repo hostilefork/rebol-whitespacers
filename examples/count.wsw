@@ -1,5 +1,5 @@
 ;
-; %tutorial.wsw
+; %count.wsw
 ;
 ; Here is an annotated example of a program which counts from 1
 ; to 10, outputting the current value as it goes.

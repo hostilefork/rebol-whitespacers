@@ -103,91 +103,24 @@ jobs:
     # save the output to a string, and compare to a known result.
 
     - name: Original Count-to-10 Tutorial Test, .ws Format
-      uses: metaeducation/ren-c-action@release
-      with:
-        checked: ${{ matrix.checked }}
-        script: |
-          expected: as text! read %examples/tutorial.out
-          actual: ""
-          call/output [
-            (system.options.boot) whitespace.reb examples/tutorial.ws
-          ] actual
-          print actual
-          if expected <> actual [
-            print "!!! OUTPUT MISMATCH, EXPECTED"
-            print expected
-            quit 1
-          ]
+      run: |
+        r3 tests/check-io.reb examples/count.ws --out count.out
 
     - name: Original Count-to-10 Tutorial Test, .wsw Format
-      uses: metaeducation/ren-c-action@release
-      with:
-        checked: ${{ matrix.checked }}
-        script: |
-          expected: as text! read %examples/tutorial.out
-          actual: ""
-          call/output [
-            (system.options.boot) whitespace.reb examples/tutorial.wsw
-          ] actual
-          print actual
-          if expected <> actual [
-            print "!!! OUTPUT MISMATCH, EXPECTED"
-            print expected
-            quit 1
-          ]
+      run: |
+        r3 tests/check-io.reb examples/count.wsw --out count.out
 
     - name: Hello World
-      uses: metaeducation/ren-c-action@release
-      with:
-        checked: ${{ matrix.checked }}
-        script: |
-          expected: read %examples/hworld.out  ; warning: CR LF!
-          actual: #{}  ; use BINARY! to avoid text translations
-          call/output [
-            (system.options.boot) whitespace.reb examples/hworld.ws
-          ] actual
-          print ^actual  ; don't try to write binary direct to console
-          if expected <> actual [
-            print "!!! OUTPUT MISMATCH, EXPECTED"
-            print ^expected
-            quit 1
-          ]
+      run: |
+        r3 tests/check-io.reb examples/hworld.ws --out hworld.out
 
     - name: Summing Calculator
-      uses: metaeducation/ren-c-action@release
-      with:
-        checked: ${{ matrix.checked }}
-        script: |
-          input: read %examples/calc.in
-          expected: read %examples/calc.out  ; warning: CR LF! 
-          actual: #{}  ; use BINARY! to avoid text translations
-          call/input/output [
-            (system.options.boot) whitespace.reb examples/calc.ws
-          ] input actual
-          print ^actual  ; don't try to write binary direct to console
-          if expected <> actual [
-            print "!!! OUTPUT MISMATCH, EXPECTED"
-            print ^expected
-            quit 1
-          ]
+      run: |
+        r3 tests/check-io.reb examples/calc.ws --in calc.in --out calc.out
 
     - name: Towers of Hanoi
-      uses: metaeducation/ren-c-action@release
-      with:
-        checked: ${{ matrix.checked }}
-        script: |
-          input: read %examples/hanoi.in
-          expected: read %examples/hanoi.out  ; warning: CR LF! 
-          actual: #{}  ; use BINARY! to avoid text translations
-          call/input/output [
-            (system.options.boot) whitespace.reb examples/hanoi.ws
-          ] input actual
-          print ^actual  ; don't try to write binary direct to console
-          if expected <> actual [
-            print "!!! OUTPUT MISMATCH, EXPECTED"
-            print ^expected
-            quit 1
-          ]
+      run: |
+        r3 tests/check-io.reb examples/hanoi.ws --in hanoi.in --out hanoi.out
 
 
   #====# "REDBOL" VERSION TEST STEPS #========================================#
