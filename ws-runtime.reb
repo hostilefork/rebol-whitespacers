@@ -62,12 +62,9 @@ whitespace-number-to-int: func [w [text!] <local> bin] [
 ]
 
 lookup-label-offset: func [label [integer!]] [
-    address: select labels label
-    if null? address [
-        print ["RUNTIME ERROR: Jump to undefined Label #" label]
-        quit 1
+    return select labels label else [
+        fail ["RUNTIME ERROR: Jump to undefined Label #" label]
     ]
-    return address
 ]
 
 
