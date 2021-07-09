@@ -93,3 +93,9 @@ emulation.
 Discussions on this and other topics are conducted on the Ren-C Forum:
 
 https://forum.rebol.info/
+
+## Useful Links
+
+Disassembler/IDE for Whitespace
+
+https://vii5ard.github.io/whitespace/
