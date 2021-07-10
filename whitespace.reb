@@ -89,7 +89,7 @@ Stack-Manipulation: category [
         {Copy Nth item on the stack (given by the arg) to top of stack}
         tab space [index: Number]
     ][
-        insert stack pick stack index
+        insert stack pick stack index + 1
     ]
 
     swap-top-2: operation [
@@ -412,7 +412,7 @@ program: parse filename [
     if strict [
         fail "Only `.ws`, `.wsa`, and `.wsw` formats supported in strict mode"
     ]
-    as text! read filename  ; tolerate 
+    as text! read filename  ; tolerate
 ]
 
 
