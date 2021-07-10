@@ -9,7 +9,8 @@ Although Whitespace was invented as a joke (or at least, released on April
 Fool's Day), making a working implementation has much of the spirit of a
 "real" programming task.  The existence of implementations in Haskell, Ruby,
 Perl, C++, and Python mean it is possible to take a real look at the contrast
-in how you can approach the problem.
+in how you can approach the problem (see the [Whitespace
+Corpus](https://github.com/wspace/corpus) for other implementations).
 
 ## Specified in Terms of a "Whitespace Dialect"
 
@@ -93,7 +94,5 @@ Discussions on this and other topics are conducted on the
 
 ## Useful Links
 
-- [The Whitespace Corpus](https://github.com/wspace/corpus) - collection of
-  interpreters, compilers, and programs for Whitespace
 - [Whitelips](https://vii5ard.github.io/whitespace/) - IDE and disassembler for
   Whitespace
