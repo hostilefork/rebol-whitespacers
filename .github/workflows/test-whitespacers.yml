@@ -110,13 +110,13 @@ jobs:
       run: |
         r3 tests/check-io.reb examples/count.wsw --out count.out
 
-    - name: Hello World
+    - name: Hello World (also tests running from URL!)
       run: |
-        r3 tests/check-io.reb examples/hworld.ws --out hworld.out
+        r3 tests/check-io.reb https://raw.githubusercontent.com/hostilefork/rebol-whitespacers/main/examples/hworld.ws --out hworld.out
 
-    - name: Summing Calculator
+    - name: Summing Calculator (also tests running from FILE!)
       run: |
-        r3 tests/check-io.reb examples/calc.ws --in calc.in --out calc.out
+        r3 tests/check-io.reb %examples/calc.ws --in calc.in --out calc.out
 
     - name: Towers of Hanoi
       run: |

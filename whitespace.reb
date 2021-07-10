@@ -382,8 +382,14 @@ parse system.script.args [while [not end ||
     (if filename [
         fail "Only one filename allowed on command line at present"
     ])
-    filename: to-file/ text!
+    filename: [
+        into text! [file! | url!]  ; try decoding as FILE! or URL! first
+        | to-file/ text!  ; fall back to converting string TO-FILE
+    ] 
 ]]
+else [
+    fail "Invalid command line parameter"
+]
 
 if not filename [
     fail "No input file given"

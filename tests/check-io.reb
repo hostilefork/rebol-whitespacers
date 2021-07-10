@@ -36,7 +36,7 @@ uparse system.script.args [while [not end ||
    into bad: text! ["--" (fail ["Unknown option:" bad])]
    |
    (if filename [fail "Only one filename permitted"])
-   filename: to-file/ text!
+   filename: <any>  ; let whitespace.reb interpret (may be URL!, FILE!, etc.)
 ]]
  
 actual: #{}  ; use BINARY! to avoid text translations
