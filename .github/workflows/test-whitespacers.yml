@@ -95,7 +95,7 @@ jobs:
     # R3-Alpha code.  The whitespace script that runs on Ren-C establishes a
     # sort of "domain specific language" for writing "Whitespace-like"
     # interpreters.
-    # 
+    #
     # If the interpreter FAILs due to an internal error it will return an exit
     # code of 1, and 0 returned on success.  But we also want to check the
     # output matches what was expected.  To do that in a cross-platform way,
@@ -118,10 +118,21 @@ jobs:
       run: |
         r3 tests/check-io.reb %examples/calc.ws --in calc.in --out calc.out
 
+    - name: Factorial
+      run: |
+        r3 tests/check-io.reb examples/fact.ws --in fact.in --out fact.out
+
     - name: Towers of Hanoi
       run: |
         r3 tests/check-io.reb examples/hanoi.ws --in hanoi.in --out hanoi.out
 
+    - name: Name Greeter
+      run: |
+        r3 tests/check-io.reb examples/name.ws --in name.in --out name.out
+
+    - name: Whitespace 0.3 Instructions Test
+      run: |
+        r3 tests/check-io.reb examples/loctest.ws --in loctest.in --out loctest.out
 
   #====# "REDBOL" VERSION TEST STEPS #========================================#
 

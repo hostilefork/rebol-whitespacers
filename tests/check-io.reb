@@ -8,12 +8,12 @@ Rebol [
         using the CALL facility...feeding data in and out through
         pipe mechanics.  This is more convenient due to being
         cross-platform, so doing shell commands for diffing etc.
-        are not necessary. 
+        are not necessary.
 
-        Unfortunately, the whitespace sample programs propagated on
-        the Internet seem to have standardized on the Windows line
-        ending convention of CR LF.  This is considered a "foreign"
-        codec by Ren-C:
+        Unfortunately, the whitespace sample programs from the
+        reference interpreter seem to have standardized on the
+        Windows line ending convention of CR LF.  This is considered
+        a "foreign" codec by Ren-C:
 
         https://forum.rebol.info/t/1264
 
@@ -23,12 +23,12 @@ Rebol [
     }
 ]
 
-input: #{} 
-expected: #{} 
+input: #{}
+expected: #{}
 
 filename: null
 
-uparse system.script.args [while [not end || 
+uparse system.script.args [while [not end ||
    "--in" input: read/ to-file/ text!
    |
    "--out" expected: read/ to-file/ text!
@@ -38,11 +38,11 @@ uparse system.script.args [while [not end ||
    (if filename [fail "Only one filename permitted"])
    filename: <any>  ; let whitespace.reb interpret (may be URL!, FILE!, etc.)
 ]]
- 
+
 actual: #{}  ; use BINARY! to avoid text translations
 
 call/input/output [
-    (system.options.boot) ../whitespace.reb (filename) 
+    (system.options.boot) ../whitespace.reb (filename)
 ] input actual
 
 print as text! actual
