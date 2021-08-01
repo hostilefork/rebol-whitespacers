@@ -334,7 +334,11 @@ IO: category [
         {Read a character to the location given by the top of the stack}
         tab space
     ][
-        print "READ-CHARACTER-TO-LOCATION NOT IMPLEMENTED"
+        ; !!! see notes above about ISSUE!/CHAR! duality, work-in-progress
+        ;
+        let char: ask issue! else [fail "Character Input Was Required"]
+        let address: take stack
+        heap.(address): codepoint of char
     ]
 
     read-number-to-location: operation [
