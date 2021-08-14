@@ -42,6 +42,10 @@ heap: make map! []
 ; from Label # to program character index
 labels: make map! []
 
+; The CATEGORY operation will add rule definitions to this list.
+;
+category-rules: []
+
 binary-string-to-int: func [s [text!] <local> pad] [
     ; debase makes bytes, so to use it we must pad to a
     ; multiple of 8 bits.  better way?
@@ -108,14 +112,15 @@ whitespace-vm-rule: [
             ]
         )
 
+        ; Try the rules added by CATEGORY as alternates.  This uses the ANY
+        ; combinator, which takes a BLOCK! as a synthesized argument.  (BLOCK!
+        ; has a reserved purpose when used as a rule, for sequencing by
+        ; default and alternates only with |.  ANY does alternates and does
+        ; not require a |.)
+        ;
         instruction-start: <here>  ;  current parse position is start address
         [
-            Stack-Manipulation.rule
-            | Arithmetic.rule
-            | Heap-Access.rule
-            | Flow-Control.rule
-            | IO.rule
-            | (fail "UNKNOWN OPERATION")
+            instruction: any (category-rules) | (fail "UNKNOWN OPERATION")
         ]
         instruction-end: <here>  ; also capture position at end of instruction
 

@@ -49,18 +49,22 @@ category: func [
     ; We should really know which things are operations to ask them for their
     ; rule contribution.  But just assume any OBJECT! is an operation.
     ;
-    obj.rule: collect [
-        keep obj.imp
-        keep [||]  ; inline sequencing operator
-        for-each [key val] obj [
-            if key == 'rule [continue]  ; what we're setting...
-            if object? val [
-                keep val.rule
-                keep [|]
+    obj.rule: compose [
+        (obj.imp)
+        any (engroup collect [
+            for-each [key val] obj [
+                if key == 'rule [continue]  ; what we're setting...
+                if object? val [
+                    keep/line ^val.rule
+                ]
             ]
-        ]
-        keep [false]  ; have to have something to the right of the last `|` 
+        ])
     ]
+
+    ; The category-rules list used by the runtime is run with an ANY rule, so
+    ; it's just a list of alternative rules...no `|` required.
+    ;
+    append category-rules ^obj.rule
 
     return obj
 ]
@@ -133,7 +137,7 @@ operation: enfixed func [
 
         rule: compose [
             ((command)) (compose/deep '(
-                instruction: compose [(to word! name) ((groups))]
+                compose [(to word! name) ((groups))]  ; instruction
             ))
         ]
     ]
