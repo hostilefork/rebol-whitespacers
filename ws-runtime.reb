@@ -7,14 +7,14 @@ Rebol [
         the parsing position is the program counter.  It leverages that
         PARSE has the ability to mark and seek input positions in a
         random-access fashion.
-    }  
+    }
 ]
 
 === TEST USERMODE PARSER COMBINATORS ===
 
 ; Because the whitespace interpreter is an intellectual exercise, we are
 ; more concerned about testing cutting-edge prototypes than trying to
-; perform well.  Redefine UPARSE to be PARSE, because they will converge. 
+; perform well.  Redefine UPARSE to be PARSE, because they will converge.
 
 parse: :uparse
 parse*: :uparse*
@@ -99,7 +99,7 @@ whitespace-vm-rule: [
 
     ; begin matching parse patterns
     while [
-        not end
+        not <end>
 
         (
             if max-steps and (execution-steps > max-steps) [

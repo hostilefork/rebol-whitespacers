@@ -367,7 +367,7 @@ filename: null
 ; had been started up with.  These are the same when running the script from
 ; the command line.
 ;
-parse system.script.args [while [not end ||
+parse system.script.args [while [not <end> ||
     ["-v" | "--verbose"]
         verbose: [
             "0" (0) | "1" (1) | "2" (2) | "3" (3)
@@ -389,7 +389,7 @@ parse system.script.args [while [not end ||
     filename: [
         into text! [file! | url!]  ; try decoding as FILE! or URL! first
         | to-file/ text!  ; fall back to converting string TO-FILE
-    ] 
+    ]
 ]]
 else [
     fail "Invalid command line parameter"
@@ -404,9 +404,9 @@ if not filename [
 
 program: parse filename [
     thru [
-        ".ws" end (as text! read filename)
-        | ".wsw" end (unspaced load filename)  ; "whitespace words"
-        | ".wsa" end (fail "WSA support not implemented yet")
+        ".ws" <end> (as text! read filename)
+        | ".wsw" <end> (unspaced load filename)  ; "whitespace words"
+        | ".wsa" <end> (fail "WSA support not implemented yet")
     ]
 ] else [
     if strict [
