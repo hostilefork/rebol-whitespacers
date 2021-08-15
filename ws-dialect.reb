@@ -75,7 +75,7 @@ operation: enfixed func [
     'name [set-word!]
     spec [block!]
     body [block!]
-    <local> args param-name param-type pos
+    <local> args param type pos
 ][
     args: copy []  ; arguments to generated FUNC are gleaned from the spec
 
@@ -146,7 +146,7 @@ operation: enfixed func [
                 ; If we hit a tag, assume the parameters are finished and we're
                 ; defining things for the function spec (<local>s, <static>s)
                 ;
-                [ahead tag!, append/ (args) across to <end>, stop]
+                [ahead tag!, pos: <here>, (append args pos), to <end>, stop]
 
                 ; Plain words specify the characters, just add them to the rule
                 ; for matching purposes but don't capture them.
@@ -156,24 +156,22 @@ operation: enfixed func [
                 ; Named parameters are in blocks, like `[location: Label]`.
                 [
                     into block! [
-                        param-name: to/ (word!) set-word!
-                        param-type: ['Label | 'Number]
+                        param: set-word!, (param: to word! param)
+                        type: ['Label | 'Number]
                     ]
 
                     ; We want the result of decoding kept as parameters to the
                     ; built instruction (e.g. KEEP the product of the Label
                     ; rule is 10 in [push 10]).  We actually want `keep Label`.
                     ;
-                    keep (compose [keep (param-type)])
+                    keep (compose [keep (type)])
 
                     ; Add the name as a parameter to the function we are
                     ; generating that will be receiving this decoded argument.
                     ; Give it a type, e.g. `value [integer!]`
                     ;
                     (append args compose [
-                        (param-name) (
-                            either param-type = 'Label [[text!]] [[integer!]]
-                        )
+                        (param) (either (type = 'Label) '[text!] '[integer!])
                     ])
                 ]
 
