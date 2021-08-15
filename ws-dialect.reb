@@ -176,11 +176,9 @@ operation: enfixed func [
                 ]
 
                 ; When nothing matches, it's an unexpected thing in the spec.
-                ; Raise an error.
-                [
-                    pos: <here>
-                    (fail ["Malformed operation parameter:" mold pos.1])
-                ]
+                ; The FAIL combinator should implicate the current input spot.
+                ;
+                fail @["Malformed OPERATION spec"]
             ]
         ]
 
