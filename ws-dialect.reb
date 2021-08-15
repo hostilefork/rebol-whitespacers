@@ -51,7 +51,8 @@ category: func [
     ;
     obj.rule: compose [
         (obj.imp)
-        any (engroup collect [
+
+        collect any @(collect [
             for-each [key val] obj [
                 if key == 'rule [continue]  ; what we're setting...
                 if object? val [
@@ -74,11 +75,9 @@ operation: enfixed func [
     'name [set-word!]
     spec [block!]
     body [block!]
-    <with> param
-    <local> groups args sw t
+    <local> args param-name param-type pos
 ][
     args: copy []  ; arguments to generated FUNC are gleaned from the spec
-    groups: copy []  ; used in the COMPOSE of the instruction's arguments
 
     ; We want the operation to be a function (and be able to bind to it as
     ; if it is one).  But there's additional information we want to glue on.
@@ -94,51 +93,113 @@ operation: enfixed func [
     ; Note: Since this operation is quoting the SET-WORD! on the left, the
     ; evaluator isn't doing an assignment.  We have to do the SET here.
     ;
-    set name make object! compose [
-        description: ensure text! first spec
+    set name uparse spec [gather [
+        emit description: [text!
+            | (fail "First item of OPERATION spec must be TEXT! description")
+        ]
 
-        command: collect [
-            for-next pos next spec [
-                any [
-                    all [  ; Whitespace operations can take `Number` or `Label`
-                        block? pos.1
-                        parse? pos.1 [sw: set-word!, t: word!]
-                        find [Number Label] ^t
-                        keep ^t
-                        elide if not empty? groups [
-                            fail "Mechanism for > 1 operation parameter TBD"
-                        ]
-                        append args ^(to word! sw)
-                        append groups [(param)]
+        ; The rule's job is to match a whitespace sequence and generate a
+        ; corresponding instruction block.  So we translate something like
+        ; PUSH's specification for what comes after the IMP ([space]):
+        ;
+        ;    [space [value: Number]]  ; extracted from OPERATION spec
+        ;
+        ; ...into a rule for processing the input code:
+        ;
+        ;    [collect [keep @push space keep Number]]
+        ;
+        ; Which if it matches, will synthesize a block:
+        ;
+        ;    [push 10]
+        ;
+        ; Notice that patterns like `space` just match and do not contribute to
+        ; the output (so no reason to KEEP anything).  But rules like `Label`
+        ; do add parameters, and we want that to get KEEP'd...as with the
+        ; decoded 10 integer above.
+        ;
+        ; There's two layers of COLLECT going on here, because we're using
+        ; PARSE of the spec to build the rule.  So it has to KEEP those KEEP
+        ; instructions!  It's easier than it sounds...  :-)
+        ;
+        ; !!! Performance note: examining the rule above, it would be more
+        ; efficient to wait to emit the instruction name until the first
+        ; value-synthesizing parameter:
+        ;
+        ;    [collect [space keep @push keep Number]]
+        ;
+        ; That way you don't reach the KEEP unless it was a space.  Review.
+
+        emit rule: collect [
+            ;
+            ; The instruction block starts with the instruction's word name.
+            ; Have the rule we're making keep that first (not a rule match,
+            ; just a synthesized-from-thin-air @word...)
+            ;
+            keep (compose [keep @(as word! name)])
+
+            while any @[
+                ;
+                ; If we hit the end, we're done processing the spec
+                ;
+                [<end>, stop]
+
+                ; If we hit a tag, assume the parameters are finished and we're
+                ; defining things for the function spec (<local>s, <static>s)
+                ;
+                [ahead tag!, append/ (args) across to <end>, stop]
+
+                ; Plain words specify the characters, just add them to the rule
+                ; for matching purposes but don't capture them.
+                ;
+                [keep ^['space | 'tab | 'lf]]
+
+                ; Named parameters are in blocks, like `[location: Label]`.
+                [
+                    into block! [
+                        param-name: to/ (word!) set-word!
+                        param-type: ['Label | 'Number]
                     ]
-                    all [  ; Words specifying the characters
-                        find [space tab lf] ^pos.1
-                        keep ^pos.1
-                    ]
-                    all [  ; If we hit a tag, assume we're starting FUNC spec
-                        tag? pos.1
-                        break
-                    ]
-                    fail ["Malformed operation parameter:" mold pos.1]
+
+                    ; We want the result of decoding kept as parameters to the
+                    ; built instruction (e.g. KEEP the product of the Label
+                    ; rule is 10 in [push 10]).  We actually want `keep Label`.
+                    ;
+                    keep (compose [keep (param-type)])
+
+                    ; Add the name as a parameter to the function we are
+                    ; generating that will be receiving this decoded argument.
+                    ; Give it a type, e.g. `value [integer!]`
+                    ;
+                    (append args compose [
+                        (param-name) (
+                            either param-type = 'Label [[text!]] [[integer!]]
+                        )
+                    ])
+                ]
+
+                ; When nothing matches, it's an unexpected thing in the spec.
+                ; Raise an error.
+                [
+                    pos: <here>
+                    (fail ["Malformed operation parameter:" mold pos.1])
                 ]
             ]
         ]
 
-        (elide group*: if not empty? args ['(param)])
-
+        ; Having figured out the number of arguments and their names implied
+        ; by the whitespace language spec, make the implementation function
+        ; that will be triggered by decoded rules.
+        ;
         ; for `push: operation ...` this will be `push.push`, reasoning above
         ;
         ; !!! We add RETURN NULL here to make that the default if a jump
         ; address is not returned.  However, using a return value may not be
         ; the ideal way of doing this (vs. calling a JUMP-TO method on some
-        ; object representing the virtual machine).
+        ; object representing the virtual machine).  Review this especially
+        ; in light of implications for hooked RETURNs being called implicitly:
         ;
-        (name) func args compose [((body)), return null]
-
-        rule: compose [
-            ((command)) (compose/deep '(
-                compose [(to word! name) ((groups))]  ; instruction
-            ))
-        ]
-    ]
+        ; https://forum.rebol.info/t/1656
+        ;
+        emit (name): (func args compose [(as group! body), return null])
+    ]]
 ]

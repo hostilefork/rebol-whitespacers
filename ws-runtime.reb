@@ -78,7 +78,7 @@ lookup-label-offset: func [label [text!]] [
 ; integer value of the decoded result
 Number: [
     encoded: across [some [space | tab] lf] (
-        param: whitespace-number-to-int encoded
+        whitespace-number-to-int encoded
     )
 ]
 
@@ -87,7 +87,7 @@ Number: [
 ; can be unreasonably long.
 ;
 Label: [
-    param: across [some [space | tab] lf]
+    across [some [space | tab] lf]
 ]
 
 pass: 1
