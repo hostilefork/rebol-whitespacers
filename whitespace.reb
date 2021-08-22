@@ -403,6 +403,10 @@ if not filename [
     fail "No input file given"
 ]
 
+if vm.verbose > 0 [
+    ===/visibility true  ; show the `=== xxxx ===` lines
+]
+
 
 === LOAD THE SOURCE INTO PROGRAM VARIABLE ===
 
@@ -431,7 +435,7 @@ remove-each ch program [
 ]
 
 
-=== QUICK CHECK FOR VALID INPUT ===
+=== OUTPUT PROGRAM SOURCE IF (VERBOSE >= 1) ===
 
 ; There should be more options to decompile and save the source.
 
@@ -442,9 +446,8 @@ if vm.verbose >= 1 [
 
 === LABEL SCANNING PASS ===
 
-; We have to scan the program for labels before we run it
-; Also this tells us if all the constructions are valid
-; before we start running
+; We have to scan the program for labels before we run it.  This also lets us
+; know if all the constructions are valid before we start running.
 
 vm.pass: 1
 parse program vm.interpreter-rule else [
@@ -459,9 +462,9 @@ if vm.verbose >= 1 [
 
 === PROGRAM EXECUTION PASS ===
 
-; The Rebol parse dialect has the flexibility to do arbitrary
-; seeks to locations in the input.  This makes it possible to
-; apply it to a language like whitespace
+; The Rebol parse dialect has the flexibility to do arbitrary seeks to
+; locations in the input.  This makes it possible to apply it to a language
+; like whitespace, where the parse position acts as the program counter.
 
 vm.pass: 2
 parse program vm.interpreter-rule else [
@@ -477,4 +480,5 @@ if vm.verbose >= 1 [
     print ["heap:" mold heap]
 ]
 
-quit 0  ; signal success to calling shell via 0 exit code
+
+=== EXIT TO SHELL WITH 0 STATUS CODE (DEFAULT) INDICATING SUCCESS TO TESTS ===
