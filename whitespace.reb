@@ -225,9 +225,12 @@ Flow-Control: category [
         space space [label: Label]
         <local> address  ; could use LET, but test expanded spec feature
     ][
-        ; now we capture the end of this instruction...
+        ; Capture the position *after* this instruction.  We calculate
+        ; relative to program-start in case the whitespace data did not start
+        ; right at the beginning.  Must add 1 to be in the Redbol 1-based
+        ; series indexing mode (what PARSE's SEEK expects to use)
         ;
-        address: offset? program-start instruction-end
+        address: 1 + offset? program-start instruction-end
         labels.(label): address
     ]
 

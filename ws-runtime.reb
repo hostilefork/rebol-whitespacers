@@ -98,35 +98,35 @@ whitespace-vm-rule: [
     ; capture start of program
     program-start: <here>
 
-    ; initialize count
     (execution-steps: 0)
 
-    ; begin matching parse patterns
     while [
         not <end>
 
-        (
-            if max-steps and (execution-steps > max-steps) [
-                print ["MORE THAN" max-steps "INSTRUCTIONS EXECUTED"]
-                quit 1
-            ]
-        )
+        (if max-steps and (execution-steps > max-steps) [
+            print ["MORE THAN" max-steps "INSTRUCTIONS EXECUTED"]
+            quit 1
+        ])
+
+        instruction-start: <here>  ;  current parse position is start address
 
         ; Try the rules added by CATEGORY as alternates.  This uses the ANY
-        ; combinator, which takes a BLOCK! as a synthesized argument.  (BLOCK!
+        ; combinator, which takes BLOCK! as a synthesized argument.  (BLOCK!
         ; has a reserved purpose when used as a rule, for sequencing by
         ; default and alternates only with |.  ANY does alternates and does
         ; not require a |.)
         ;
-        instruction-start: <here>  ;  current parse position is start address
-        [
-            instruction: any (category-rules) | (fail "UNKNOWN OPERATION")
-        ]
+        instruction: [any (category-rules) | (fail "UNKNOWN OPERATION")]
+
         instruction-end: <here>  ; also capture position at end of instruction
 
-        ; execute the VM code and optionally give us debug output
-        (
-            ; This debugging output is helpful if there are malfunctions
+        ; === EXECUTE VM CODE ===
+
+        ; GROUP! of code in parentheses evaluates to next location to jump to.
+        ;
+        seek (
+            let jump-position: _  ; SEEK of BLANK! leaves parse position as is
+
             if verbose >= 3 [
                 print [
                     "S:" offset? program-start instruction-start
@@ -136,40 +136,27 @@ whitespace-vm-rule: [
                 ]
             ]
 
-            ; default to whatever is next, which is where we
-            ; were before this code
-            next-instruction: instruction-end
-
-            either 'mark-location == word [
-                if (pass == 1) [
+            if 'mark-location = instruction.1 [  ; labels marked on first pass
+                if pass = 1 [
                     if verbose >= 2 [
-                        print ["(" mold instruction ")"]
+                        print mold instruction
                     ]
 
-                    ; the first pass does the Label markings...
-                    ensure null do instruction
+                    ensure null do instruction  ; null means "don't jump"
                 ]
-            ][
-                if (pass == 2) [
+            ] else [
+                if pass = 2 [  ; most instructions run on the second pass
                     if verbose >= 2 [
-                        print ["(" mold instruction ")"]
+                        print mold instruction
                     ]
 
-                    ; most instructions run on the second pass...
-                    result: do instruction
-
-                    if not null? result [
-                        ; if the instruction returned a value, use
-                        ; as the offset of the next instruction to execute
-                        next-instruction: skip program-start result
-                    ]
+                    jump-position: try do instruction  ; null is no jump
 
                     execution-steps: execution-steps + 1
                 ]
             ]
-        )
 
-        ; Set the parse position to whatever we set in the code above
-        seek (try next-instruction)
+            jump-position
+        )
     ]
 ]
