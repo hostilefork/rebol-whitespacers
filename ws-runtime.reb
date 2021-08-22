@@ -140,38 +140,6 @@ whitespace-vm-rule: [
             ; were before this code
             next-instruction: instruction-end
 
-            ; !!! The original implementation put the functions to handle the
-            ; opcodes in global scope, so when an instruction said something
-            ; like [jump-if-zero] it would be found.  Now the functions are
-            ; inside one of the category objects.  As a temporary measure to
-            ; keep things working, just try binding the instruction in all
-            ; the category objects.
-            ;
-            ; !!! Also, this isn't going to give you an ACTION!, it gives an
-            ; OBJECT! which has an action as a member.  So you have to pick
-            ; the action out of it.  Very ugly...fix this soon!
-
-            word: take instruction
-
-            word: any [
-                in Stack-Manipulation word
-                in Arithmetic word
-                in Heap-Access word
-                in Flow-Control word
-                in IO word
-            ] else [
-                fail "instruction WORD! not found in any of the categories"
-            ]
-
-            ; !!! Furthering the hackishness of the moment, we bind to an
-            ; action in the object with a field name the same as the word.
-            ; So `push.push`, or `add.add`.  See OPERATION for a description
-            ; of why we're doing this for now.
-            ;
-            word: non null in get word word
-            ensure action! get word
-            insert instruction ^word
-
             either 'mark-location == word [
                 if (pass == 1) [
                     if verbose >= 2 [

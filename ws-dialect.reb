@@ -74,12 +74,12 @@ category: func [
     return obj
 ]
 
-operation: enfixed func [
+export operation: enfix func [
     return: [object!]
     'name [set-word!]
     spec [block!]
     body [block!]
-    <local> args param type pos
+    <local> args param type pos result
 ][
     args: copy []  ; arguments to generated FUNC are gleaned from the spec
 
@@ -97,7 +97,7 @@ operation: enfixed func [
     ; Note: Since this operation is quoting the SET-WORD! on the left, the
     ; evaluator isn't doing an assignment.  We have to do the SET here.
     ;
-    set name uparse spec [gather [
+    result: uparse spec [gather [
         emit description: [text!
             | (fail "First item of OPERATION spec must be TEXT! description")
         ]
@@ -200,6 +200,20 @@ operation: enfixed func [
         ;
         ; https://forum.rebol.info/t/1656
         ;
-        emit (name): (func args compose [(as group! body), return null])
+        ; !!! We bind the body into the VM, so that the author of the function
+        ; can just say `stack` instead of `vm.stack`.  This works better than
+        ; having them do a top-level import of %ws-runtime.reb for the
+        ; entire script, because that would make local copies of the
+        ; variables like `program-start` and not see changes.  Review.
+        ;
+        emit (name): (func args compose [(bind as group! body vm), return null])
     ]]
+
+    ; We want the instruction name WORD!, e.g. the PUSH in `[push 10]`, to look
+    ; up to the function we just created.  So bind the rule into the object
+    ; we made, whose `emit (name):` created a function variable by that name.
+    ;
+    bind result.rule result
+
+    return set name result
 ]
