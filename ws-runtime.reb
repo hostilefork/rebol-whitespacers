@@ -49,26 +49,23 @@ labels: make map! []
 ;
 category-rules: []
 
-binary-string-to-int: func [s [text!] <local> pad] [
-    ; debase makes bytes, so to use it we must pad to a
-    ; multiple of 8 bits.  better way?
-    pad: unspaced array/initial (8 - modulo (length of s) 8) #"0"
-    return to-integer debase/base unspaced [pad s] 2
-]
+whitespace-number-to-int: func [
+    text "whitespace encoded number (SPACE => 0, TAB => 1)"
+        [text!]
+][
+    let sign: either space = first text [1] [-1]  ; first char indicates sign
 
-whitespace-number-to-int: func [w [text!] <local> bin] [
-    ; first character indicates sign
-    sign: either space == first w [1] [-1]
-
-    ; rest is binary value
-    bin: copy next w
+    let bin: copy next text
     replace/all bin space "0"
     replace/all bin tab "1"
-    replace/all bin lf ""
-    return sign * (binary-string-to-int bin)
+
+    ; DEBASE makes bytes, we must pad to a multiple of 8 bits.  Better way?
+    ;
+    let pad: unspaced array/initial (8 - modulo (length of bin) 8) #"0"
+    return sign * to-integer debase/base unspaced [pad bin] 2
 ]
 
-lookup-label-offset: func [label [text!]] [
+export lookup-label-offset: func [label [text!]] [
     return select labels label else [
         fail ["RUNTIME ERROR: Jump to undefined Label" mold label]
     ]
@@ -77,11 +74,11 @@ lookup-label-offset: func [label [text!]] [
 
 === PARSE-BASED VIRTUAL MACHINE ===
 
-; if the number rule matches, then param will contain the
-; integer value of the decoded result
-Number: [
-    encoded: across [some [space | tab] lf] (
-        whitespace-number-to-int encoded
+; Synthesized product of this rule is the number decoded as an INTEGER!
+;
+export Number: [
+    encoded: across some [space | tab], elide lf (
+        whitespace-number-to-int encoded  ; ^-- elide so ACROSS is rule result
     )
 ]
 
@@ -89,8 +86,8 @@ Number: [
 ; tabs.  We don't want to use a Number rule for them--though--because they
 ; can be unreasonably long.
 ;
-Label: [
-    across [some [space | tab] lf]
+export Label: [
+    across some [space | tab], elide lf  ; elide so ACROSS is rule result
 ]
 
 pass: 1
