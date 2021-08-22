@@ -4,15 +4,15 @@ Rebol [
 
     Author: "Hostile Fork"
     Home: http://github.com/hostilefork/whitespacers/
-    License: 'mit
+    License: mit
 
     File: %whitespace.reb
     Date: 31-Jan-2019
     Version: 0.3.0
 
     ; Header conventions: http://www.rebol.org/one-click-submission-help.r
-    Type: 'fun
-    Level: 'intermediate
+    Type: fun
+    Level: intermediate
 
     Description: {
         This is an interpreter for the Whitespace language in the Ren-C branch
