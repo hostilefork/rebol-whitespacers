@@ -13,6 +13,10 @@ Rebol [
     }
 ]
 
+import %ws-common.reb
+
+vm: import %ws-runtime.reb
+
 
 category: func [
     return: [object!]

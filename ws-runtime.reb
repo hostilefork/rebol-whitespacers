@@ -13,15 +13,7 @@ Rebol [
     }
 ]
 
-=== TEST USERMODE PARSER COMBINATORS ===
-
-; Because the whitespace interpreter is an intellectual exercise, we are
-; more concerned about testing cutting-edge prototypes than trying to
-; perform well.  Redefine UPARSE to be PARSE, because they will converge.
-
-parse: :uparse
-parse*: :uparse*
-parse?: :uparse?
+import %ws-common.reb
 
 
 === RUNTIME VIRTUAL MACHINE OPERATIONS ===
@@ -31,23 +23,39 @@ parse?: :uparse?
 ; 2 - show individual instructions
 ; 3 - show beginning and end series positions for each step
 ;
+; !!! Current export mechanism for changing values means that the importing
+; module gets a copy on import and doesn't see changes after that.  This is
+; fine for blocks or objects that are passed by reference, but not things
+; like positions that change or immediates like verbose.  The importer must
+; access these through `vm: import %ws-runtime.reb` and then `vm.verbose`
+;
 verbose: 0
 
-; start out with an empty stack
-stack: []
-
-; callstack is separate from data stack
-callstack: []
-
-; a map is probably not ideal
-heap: make map! []
-
-; from Label # to program character index
-labels: make map! []
-
-; The CATEGORY operation will add rule definitions to this list.
+; We allow you to execute a series starting at any position.  This would allow
+; for running a whitespace program embedded in something with a header of
+; some kind (for instance) without copying to a new series.  But at the moment
+; that means indices must be calculated as the offset from this beginning.
 ;
-category-rules: []
+; !!! See notes on verbose for why these aren't exported, access with `vm.xxx`
+;
+program-start: ~unset~
+instruction-end: ~unset~
+pass: 1
+max-steps: null
+
+; !!! The module mechanisms for seeing changes in exported variables are
+; under review.  In the meantime, the below are series, maps, and functions
+; and are okay to export.
+
+export stack: []  ; start out with an empty stack
+
+export callstack: []  ; callstack is separate from data stack
+
+export heap: make map! []  ; a map is probably not ideal
+
+export labels: make map! []  ; maps Label strings to program character indices
+
+export category-rules: []  ; CATEGORY from %ws-dialect.reb adds to this list
 
 whitespace-number-to-int: func [
     text "whitespace encoded number (SPACE => 0, TAB => 1)"
@@ -90,12 +98,8 @@ export Label: [
     across some [space | tab], elide lf  ; elide so ACROSS is rule result
 ]
 
-pass: 1
 
-max-steps: null
-
-whitespace-vm-rule: [
-    ; capture start of program
+export interpreter-rule: [
     program-start: <here>
 
     (execution-steps: 0)

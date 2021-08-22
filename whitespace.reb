@@ -54,9 +54,11 @@ Rebol [
     ]
 ]
 
+import %ws-common.reb
 
-do %ws-runtime.reb  ; declarations the stack and other structures
-do %ws-dialect.reb  ; defines the CATEGORY and OPERATION used below
+import %ws-dialect.reb  ; defines the CATEGORY and OPERATION used below
+
+vm: import %ws-runtime.reb  ; runtime stack, program counters, etc.
 
 
 === CONTROL SEQUENCE DEFINITIONS ===
@@ -357,7 +359,6 @@ IO: category [
 
 === PROCESS COMMAND-LINE ARGUMENTS ===
 
-verbose: 0
 strict: false
 filename: null
 
@@ -372,14 +373,14 @@ filename: null
 ;
 parse system.script.args [while [not <end> ||
     ["-v" | "--verbose"]
-        verbose: [
+        vm.verbose: [
             "0" (0) | "1" (1) | "2" (2) | "3" (3)
             | (fail "--verbose must be 0, 1, 2, or 3")
         ]
     |
     "--strict" (strict: true)
     |
-    "--max-steps" max-steps: into text! [integer!]
+    "--max-steps" vm.max-steps: into text! [integer!]
     |
     into text! [
         ["--" bad: <here>]
@@ -432,13 +433,10 @@ remove-each ch program [
 
 === QUICK CHECK FOR VALID INPUT ===
 
-separator: "---"
+; There should be more options to decompile and save the source.
 
-if verbose >= 1 [
-    print "WHITESPACE INTERPRETER FOR PROGRAM:"
-    print separator
+if vm.verbose >= 1 [
     print mold program
-    print separator
 ]
 
 
@@ -448,16 +446,12 @@ if verbose >= 1 [
 ; Also this tells us if all the constructions are valid
 ; before we start running
 
-if verbose >= 1 [
-    print "LABEL SCAN PHASE"
-]
-
-pass: 1
-parse program whitespace-vm-rule else [
+vm.pass: 1
+parse program vm.interpreter-rule else [
     fail "INVALID INPUT"
 ]
 
-if verbose >= 1 [
+if vm.verbose >= 1 [
     print mold labels
     print separator
 ]
@@ -469,13 +463,15 @@ if verbose >= 1 [
 ; seeks to locations in the input.  This makes it possible to
 ; apply it to a language like whitespace
 
-pass: 2
-parse program whitespace-vm-rule else [
+vm.pass: 2
+parse program vm.interpreter-rule else [
     fail "UNEXPECTED TERMINATION (Internal Error)"
 ]
 
-if verbose >= 1 [
-    print "Program End Encountered"
+
+=== PROGRAM END ENCOUNTERED ===
+
+if vm.verbose >= 1 [
     print ["stack:" mold stack]
     print ["callstack:" mold callstack]
     print ["heap:" mold heap]
