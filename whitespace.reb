@@ -456,7 +456,6 @@ parse program vm.interpreter-rule else [
 
 if vm.verbose >= 1 [
     print mold labels
-    print separator
 ]
 
 
