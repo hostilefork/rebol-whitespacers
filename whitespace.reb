@@ -243,7 +243,7 @@ Flow-Control: category [
         ; Call subroutine must be able to find the current parse location
         ; (a.k.a. program counter) so it can put it in the callstack.
         ;
-        let current-offset: offset? program-start instruction-end
+        let current-offset: 1 + offset? program-start instruction-end
         insert callstack current-offset
         return lookup-label-offset label
     ]
