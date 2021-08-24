@@ -18,7 +18,7 @@ import %ws-common.reb
 vm: import %ws-runtime.reb
 
 
-category: func [
+export category: func [
     return: [object!]
     definition [block!]
     <local> obj
