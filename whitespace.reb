@@ -291,7 +291,7 @@ Flow-Control: category [
         ; Requesting to jump to the address at the end of the program will be
         ; the same as reaching it normally, terminating the PARSE interpreter.
         ;
-        return length of program-start
+        return length of program-start + 1
     ]
 ]
 
