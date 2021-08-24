@@ -146,5 +146,4 @@ jobs:
       with:
         checked: ${{ matrix.checked }}
         script: |
-          do https://raw.githubusercontent.com/metaeducation/ren-c/master/scripts/redbol.reb
           do %historical/whitespace-old.reb  ; has program hardcoded in it

@@ -152,6 +152,11 @@ Rebol [
     ]
 ]
 
+; !!! Note: The ultimate goal for "Redbol" emulation is to be cued to run with
+; some kind of hint in the header.  For now use an IMPORT statement that is
+; only understood by Ren-C.
+;
+import <redbol>
 
 ;
 ; CONTROL SEQUENCE DEFINITIONS
