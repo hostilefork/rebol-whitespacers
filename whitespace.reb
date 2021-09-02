@@ -375,7 +375,7 @@ parse system.script.args [while [not <end> ||
     ["-v" | "--verbose"]
         vm.verbose: [
             "0" (0) | "1" (1) | "2" (2) | "3" (3)
-            | (fail "--verbose must be 0, 1, 2, or 3")
+            | fail @["--verbose must be 0, 1, 2, or 3"]
         ]
     |
     "--strict" (strict: true)
@@ -383,8 +383,8 @@ parse system.script.args [while [not <end> ||
     "--max-steps" vm.max-steps: into text! [integer!]
     |
     into text! [
-        ["--" bad: <here>]
-        (fail ["Unknown command line option:" bad])
+        ahead "--"
+        fail @["Unknown command line option"]
     ]
     |
     (if filename [
