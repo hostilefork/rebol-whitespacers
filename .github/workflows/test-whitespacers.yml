@@ -79,9 +79,7 @@ jobs:
     - uses: actions/checkout@v2
 
 
-
   #====# INSTALL R3 INTERPRETER #=============================================#
-
 
     - name: Download and Cache the Interpreter
       uses: metaeducation/ren-c-action@release
@@ -104,35 +102,36 @@ jobs:
 
     - name: Original Count-to-10 Tutorial Test, .ws Format
       run: |
-        r3 tests/check-io.reb examples/count.ws --out count.out
+        r3 tests/check-io.reb examples/count.ws --out tests/count.out
 
     - name: Original Count-to-10 Tutorial Test, .wsw Format
       run: |
-        r3 tests/check-io.reb examples/count.wsw --out count.out
+        r3 tests/check-io.reb examples/count.wsw --out tests/count.out
 
     - name: Hello World (also tests running from URL!)
       run: |
-        r3 tests/check-io.reb https://raw.githubusercontent.com/hostilefork/rebol-whitespacers/main/examples/hworld.ws --out hworld.out
+        r3 tests/check-io.reb https://raw.githubusercontent.com/hostilefork/rebol-whitespacers/main/examples/hworld.ws --out tests/hworld.out
 
     - name: Summing Calculator (also tests running from FILE!)
       run: |
-        r3 tests/check-io.reb %examples/calc.ws --in calc.in --out calc.out
+        r3 tests/check-io.reb %examples/calc.ws --in tests/calc.in --out tests/calc.out
 
     - name: Factorial
       run: |
-        r3 tests/check-io.reb examples/fact.ws --in fact.in --out fact.out
+        r3 tests/check-io.reb examples/fact.ws --in tests/fact.in --out tests/fact.out
 
     - name: Towers of Hanoi
       run: |
-        r3 tests/check-io.reb examples/hanoi.ws --in hanoi.in --out hanoi.out
+        r3 tests/check-io.reb examples/hanoi.ws --in tests/hanoi.in --out tests/hanoi.out
 
     - name: Name Greeter
       run: |
-        r3 tests/check-io.reb examples/name.ws --in name.in --out name.out
+        r3 tests/check-io.reb examples/name.ws --in tests/name.in --out tests/name.out
 
     - name: Whitespace 0.3 Instructions Test
       run: |
-        r3 tests/check-io.reb examples/loctest.ws --in loctest.in --out loctest.out
+        r3 tests/check-io.reb examples/loctest.ws --in tests/loctest.in --out tests/loctest.out
+
 
   #====# "REDBOL" VERSION TEST STEPS #========================================#
 

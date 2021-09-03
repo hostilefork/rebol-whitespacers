@@ -42,7 +42,7 @@ uparse system.script.args [while [not <end> ||
 actual: #{}  ; use BINARY! to avoid text translations
 
 call/input/output [
-    (system.options.boot) ../whitespace.reb (filename)
+    (system.options.boot) whitespace.reb (filename)
 ] input actual
 
 print as text! actual
