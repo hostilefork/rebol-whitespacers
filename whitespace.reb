@@ -371,7 +371,7 @@ filename: null
 ; had been started up with.  These are the same when running the script from
 ; the command line.
 ;
-parse system.script.args [while [not <end> ||
+parse system.script.args [maybe some [not <end> ||
     ["-v" | "--verbose"]
         vm.verbose: [
             "0" (0) | "1" (1) | "2" (2) | "3" (3)

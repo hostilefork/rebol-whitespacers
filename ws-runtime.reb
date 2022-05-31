@@ -104,7 +104,7 @@ export interpreter-rule: [
 
     (execution-steps: 0)
 
-    while [
+    maybe some [
         not <end>
 
         (if max-steps and (execution-steps > max-steps) [

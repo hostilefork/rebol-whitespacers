@@ -145,7 +145,7 @@ export operation: enfix func [
             ;
             keep (compose [keep @(as word! name)])
 
-            while any @[
+            maybe some any @[
                 ;
                 ; If we hit the end, we're done processing the spec
                 ;
