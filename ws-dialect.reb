@@ -60,7 +60,7 @@ export category: func [
     obj.rule: compose [
         (obj.imp)
 
-        collect any @(collect [
+        collect any (collect [
             for-each [key val] obj [
                 if key == 'rule [continue]  ; what we're setting...
                 if object? val [
@@ -145,7 +145,7 @@ export operation: enfix func [
             ;
             keep (compose [keep @(as word! name)])
 
-            maybe some any @[
+            maybe some any [
                 ;
                 ; If we hit the end, we're done processing the spec
                 ;
