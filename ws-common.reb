@@ -21,4 +21,3 @@ Rebol [
 
 export parse: :uparse
 export parse*: :uparse*
-export parse?: :uparse?
