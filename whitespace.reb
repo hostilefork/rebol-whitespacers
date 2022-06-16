@@ -117,7 +117,9 @@ Stack-Manipulation: category [
 ]
 
 
-do-arithmetic: func [operator [word!]] [
+do-arithmetic: func [
+    operator [word!]
+][
     ; note the first item pushed is the left of the operation.
 
     let right: take stack
@@ -125,6 +127,7 @@ do-arithmetic: func [operator [word!]] [
     insert stack do reduce [  ; we could also `reeval operator left right`
         operator left right
     ]
+    return none
 ]
 
 
