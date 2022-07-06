@@ -383,9 +383,9 @@ parse system.script.args [maybe some [not <end> ||
     |
     "--strict" (strict: true)
     |
-    "--max-steps" vm.max-steps: into text! [integer!]
+    "--max-steps" vm.max-steps: subparse text! [integer!]
     |
-    into text! [
+    subparse text! [
         ahead "--"
         fail @["Unknown command line option"]
     ]
@@ -394,7 +394,7 @@ parse system.script.args [maybe some [not <end> ||
         fail "Only one filename allowed on command line at present"
     ])
     filename: [
-        into text! [file! | url!]  ; try decoding as FILE! or URL! first
+        subparse text! [file! | url!]  ; try decoding as FILE! or URL! first
         | to-file/ text!  ; fall back to converting string TO-FILE
     ]
 ]]

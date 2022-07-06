@@ -163,7 +163,7 @@ export operation: enfix func [
 
                 ; Named parameters are in blocks, like `[location: Label]`.
                 [
-                    into block! [
+                    subparse block! [
                         param: set-word!, (param: to word! param)
                         type: ['Label | 'Number]
                     ]
