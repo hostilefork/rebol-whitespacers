@@ -28,7 +28,7 @@ expected: #{}
 
 filename: null
 
-uparse system.script.args [maybe some [not <end> ||
+parse system.script.args [maybe some [not <end> ||
     "--in" input: read/ to-file/ text!
     |
     "--out" expected: read/ to-file/ text!

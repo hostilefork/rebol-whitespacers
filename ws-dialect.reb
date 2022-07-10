@@ -101,7 +101,7 @@ export operation: enfix func [
     ; Note: Since this operation is quoting the SET-WORD! on the left, the
     ; evaluator isn't doing an assignment.  We have to do the SET here.
     ;
-    result: uparse spec [gather [
+    result: parse spec [gather [
         emit description: [text!
             | (fail "First item of OPERATION spec must be TEXT! description")
         ]

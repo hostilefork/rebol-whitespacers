@@ -13,11 +13,4 @@ Rebol [
     }
 ]
 
-=== TEST USERMODE PARSER COMBINATORS ===
-
-; Because the whitespace interpreter is an intellectual exercise, we are
-; more concerned about testing cutting-edge prototypes than trying to
-; perform well.  Redefine UPARSE to be PARSE, because they will converge.
-
-export parse: :uparse
-export parse*: :uparse*
+; Previously this redefined PARSE to UPARSE, but that is now standard.
