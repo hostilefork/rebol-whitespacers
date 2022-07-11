@@ -38,8 +38,8 @@ verbose: 0
 ;
 ; !!! See notes on verbose for why these aren't exported, access with `vm.xxx`
 ;
-program-start: ~unset~
-instruction-end: ~unset~
+program-start: ~
+instruction-end: ~
 pass: 1
 max-steps: null
 

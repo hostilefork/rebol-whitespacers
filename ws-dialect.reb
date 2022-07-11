@@ -41,10 +41,10 @@ export category: func [
     obj: make object! collect [
         for-each item definition [
             if set-word? item [
-                keep compose [(item) ~unset~]
+                keep compose [(item) ~]
             ]
         ]
-        keep [rule: ~unset~]  ; we're going to add a rule
+        keep [rule: ~]  ; we're going to add a rule
     ]
 
     ; Now, run a block which is a copy where all the SET-WORD!s are bound
