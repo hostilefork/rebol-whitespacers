@@ -114,7 +114,7 @@ export operation: enfix func [
         ;
         ; ...into a rule for processing the input code:
         ;
-        ;    [collect [keep @push space keep Number]]
+        ;    [collect [keep just push, space, keep Number]]
         ;
         ; Which if it matches, will synthesize a block:
         ;
@@ -133,7 +133,7 @@ export operation: enfix func [
         ; efficient to wait to emit the instruction name until the first
         ; value-synthesizing parameter:
         ;
-        ;    [collect [space keep @push keep Number]]
+        ;    [collect [space, keep just push, keep Number]]
         ;
         ; That way you don't reach the KEEP unless it was a space.  Review.
 
@@ -141,9 +141,9 @@ export operation: enfix func [
             ;
             ; The instruction block starts with the instruction's word name.
             ; Have the rule we're making keep that first (not a rule match,
-            ; just a synthesized-from-thin-air @word...)
+            ; just a synthesized-from-thin-air word...)
             ;
-            keep (compose [keep @(as word! name)])
+            keep (compose [keep just (as word! name)])
 
             maybe some any [
                 ;
