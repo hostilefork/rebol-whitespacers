@@ -41,10 +41,12 @@ export category: func [
     obj: make object! collect [
         for-each item definition [
             if set-word? item [
-                keep compose [(item) ~]
+                keep item
+                keep '~
             ]
         ]
-        keep [rule: ~]  ; we're going to add a rule
+        keep 'rule:  ; we're going to add a rule
+        keep '~
     ]
 
     ; Now, run a block which is a copy where all the SET-WORD!s are bound
@@ -64,7 +66,7 @@ export category: func [
             for-each [key val] obj [
                 if key == 'rule [continue]  ; what we're setting...
                 if object? val [
-                    keep/line ^val.rule
+                    keep/line val.rule
                 ]
             ]
         ])
@@ -73,7 +75,7 @@ export category: func [
     ; The category-rules list used by the runtime is run with an ANY rule, so
     ; it's just a list of alternative rules...no `|` required.
     ;
-    append category-rules ^obj.rule
+    append category-rules obj.rule
 
     return obj
 ]
@@ -114,7 +116,7 @@ export operation: enfix func [
         ;
         ; ...into a rule for processing the input code:
         ;
-        ;    [collect [keep just push, space, keep Number]]
+        ;    [collect [keep the push, space, keep Number]]
         ;
         ; Which if it matches, will synthesize a block:
         ;
@@ -133,7 +135,7 @@ export operation: enfix func [
         ; efficient to wait to emit the instruction name until the first
         ; value-synthesizing parameter:
         ;
-        ;    [collect [space, keep just push, keep Number]]
+        ;    [collect [space, keep the push, keep Number]]
         ;
         ; That way you don't reach the KEEP unless it was a space.  Review.
 
@@ -143,7 +145,7 @@ export operation: enfix func [
             ; Have the rule we're making keep that first (not a rule match,
             ; just a synthesized-from-thin-air word...)
             ;
-            keep (compose [keep just (as word! name)])
+            keep (spread compose [keep the (as word! name)])
 
             maybe some any [
                 ;
@@ -154,12 +156,12 @@ export operation: enfix func [
                 ; If we hit a tag, assume the parameters are finished and we're
                 ; defining things for the function spec (<local>s, <static>s)
                 ;
-                [ahead tag!, pos: <here>, (append args pos), to <end>, stop]
+                [ahead tag!, pos: <here>, (append args spread pos), to <end>, stop]
 
                 ; Plain words specify the characters, just add them to the rule
                 ; for matching purposes but don't capture them.
                 ;
-                [keep ^['space | 'tab | 'lf]]
+                [keep ['space | 'tab | 'lf]]
 
                 ; Named parameters are in blocks, like `[location: Label]`.
                 [
@@ -172,15 +174,16 @@ export operation: enfix func [
                     ; built instruction (e.g. KEEP the product of the Label
                     ; rule is 10 in [push 10]).  We actually want `keep Label`.
                     ;
-                    keep (compose [keep (type)])
+                    keep (spread compose [keep (type)])
 
                     ; Add the name as a parameter to the function we are
                     ; generating that will be receiving this decoded argument.
                     ; Give it a type, e.g. `value [integer!]`
                     ;
-                    (append args compose [
-                        (param) (either (type = 'Label) '[text!] '[integer!])
-                    ])
+                    (
+                        append args param
+                        append args either (type = 'Label) '[text!] '[integer!]
+                    )
                 ]
 
                 ; When nothing matches, it's an unexpected thing in the spec.
