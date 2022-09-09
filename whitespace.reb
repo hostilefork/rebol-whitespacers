@@ -200,7 +200,7 @@ Heap-Access: category [
         space
     ][
         let value: take stack  ; spec does not explicitly specify removal
-        let address: take stack  ; (same)
+        let address: ensure integer! take stack  ; (same)
         heap.(address): value
     ]
 
@@ -345,7 +345,7 @@ IO: category [
         ; !!! see notes above about ISSUE!/CHAR! duality, work-in-progress
         ;
         let char: ask issue! else [fail "Character Input Was Required"]
-        let address: take stack
+        let address: ensure integer! take stack
         heap.(address): codepoint of char
     ]
 
@@ -353,7 +353,7 @@ IO: category [
         {Read a number to the location given by the top of the stack}
         tab tab
     ][
-        let address: take stack
+        let address: ensure integer! take stack
         let num: ask integer! else [fail "Integer Input Was Required"]
         heap.(address): num
     ]
