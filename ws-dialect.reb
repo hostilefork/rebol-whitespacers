@@ -147,7 +147,7 @@ export operation: enfix func [
             ;
             keep (spread compose [keep the (as word! name)])
 
-            maybe some any [
+            try some any [
                 ;
                 ; If we hit the end, we're done processing the spec
                 ;

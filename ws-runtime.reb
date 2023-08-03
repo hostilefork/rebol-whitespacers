@@ -104,9 +104,7 @@ export interpreter-rule: [
 
     (execution-steps: 0)
 
-    maybe some [
-        not <end>
-
+    while [not <end>] [
         (if max-steps and (execution-steps > max-steps) [
             print ["MORE THAN" max-steps "INSTRUCTIONS EXECUTED"]
             quit 1
