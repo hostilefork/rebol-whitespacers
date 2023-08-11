@@ -398,7 +398,7 @@ parse system.script.args [while [not <end>] [
         | to-file/ text!  ; fall back to converting string TO-FILE
     ]
 ]]
-else [
+except [
     fail "Invalid command line parameter"
 ]
 
@@ -419,7 +419,7 @@ program: parse filename [
         | ".wsw" <end> (unspaced load filename)  ; "whitespace words"
         | ".wsa" <end> (fail "WSA support not implemented yet")
     ]
-] else [
+] except [
     if strict [
         fail "Only `.ws`, `.wsa`, and `.wsw` formats supported in strict mode"
     ]
@@ -453,7 +453,7 @@ if vm.verbose >= 1 [
 ; know if all the constructions are valid before we start running.
 
 vm.pass: 1
-parse program vm.interpreter-rule else [
+parse program vm.interpreter-rule except [
     fail "INVALID INPUT"
 ]
 
@@ -469,7 +469,7 @@ if vm.verbose >= 1 [
 ; like whitespace, where the parse position acts as the program counter.
 
 vm.pass: 2
-parse program vm.interpreter-rule else [
+parse program vm.interpreter-rule except [
     fail "UNEXPECTED TERMINATION (Internal Error)"
 ]
 
