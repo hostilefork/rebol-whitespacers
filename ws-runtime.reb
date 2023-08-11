@@ -126,8 +126,8 @@ export interpreter-rule: [
 
         ; GROUP! of code in parentheses evaluates to next location to jump to.
         ;
-        try seek (
-            let jump-position: null  ; TRY SEEK of NULL doesn't change position
+        seek (
+            let jump-position: null
 
             if verbose >= 3 [
                 print [
@@ -144,7 +144,7 @@ export interpreter-rule: [
                         print mold instruction
                     ]
 
-                    ensure null do instruction  ; null means "don't jump"
+                    ensure null do instruction  ; null for "don't jump"
                 ]
             ] else [
                 if pass = 2 [  ; most instructions run on the second pass
@@ -158,7 +158,7 @@ export interpreter-rule: [
                 ]
             ]
 
-            jump-position
+            maybe jump-position  ; SEEK sees void as do not jump
         )
     ]
 ]
