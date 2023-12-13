@@ -127,7 +127,6 @@ do-arithmetic: func [
     insert stack do reduce [  ; we could also `reeval operator left right`
         operator left right
     ]
-    return none
 ]
 
 
