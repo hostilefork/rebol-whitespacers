@@ -146,12 +146,8 @@ export operation: enfix func [
             ;
             keep (spread compose [keep the (as word! name)])
 
-            try some any [
+            while [not <end>] any [  ; done processing spec if end hit
                 ;
-                ; If we hit the end, we're done processing the spec
-                ;
-                [<end>, stop]
-
                 ; If we hit a tag, assume the parameters are finished and we're
                 ; defining things for the function spec (<local>s, <static>s)
                 [
