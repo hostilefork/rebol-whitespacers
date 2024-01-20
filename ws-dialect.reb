@@ -53,7 +53,7 @@ export category: func [
     ; into the object, but only those top level set-words...nothing else.
     ;
     do map-each item definition [
-        (in obj maybe match set-word! item) else [item]
+        (has obj maybe match set-word! item) else [item]
     ]
 
     ; We should really know which things are operations to ask them for their
