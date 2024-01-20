@@ -39,6 +39,7 @@ verbose: 0
 ; !!! See notes on verbose for why these aren't exported, access with `vm.xxx`
 ;
 program-start: ~
+instruction-start: ~
 instruction-end: ~
 pass: 1
 max-steps: null
@@ -85,7 +86,7 @@ export lookup-label-offset: func [label [text!]] [
 ; Synthesized product of this rule is the number decoded as an INTEGER!
 ;
 export Number: [
-    encoded: across some [space | tab], elide lf (
+    let encoded: across some [space | tab], elide lf (
         whitespace-number-to-int encoded  ; ^-- elide so ACROSS is rule result
     )
 ]
@@ -102,7 +103,7 @@ export Label: [
 export interpreter-rule: [
     program-start: <here>
 
-    (execution-steps: 0)
+    let execution-steps: 0
 
     while [not <end>] [
         (if max-steps and (execution-steps > max-steps) [
@@ -118,7 +119,7 @@ export interpreter-rule: [
         ; default and alternates only with |.  ANY does alternates and does
         ; not require a |.)
         ;
-        instruction: [any (category-rules) | (fail "UNKNOWN OPERATION")]
+        let instruction: [any (category-rules) | (fail "UNKNOWN OPERATION")]
 
         instruction-end: <here>  ; also capture position at end of instruction
 

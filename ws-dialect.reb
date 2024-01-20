@@ -85,9 +85,8 @@ export operation: enfix func [
     'name [set-word!]
     spec [block!]
     body [block!]
-    <local> args param type pos result
 ][
-    args: copy []  ; arguments to generated FUNC are gleaned from the spec
+    let args: copy []  ; arguments to generated FUNC are gleaned from the spec
 
     ; We want the operation to be a function (and be able to bind to it as
     ; if it is one).  But there's additional information we want to glue on.
@@ -103,7 +102,7 @@ export operation: enfix func [
     ; Note: Since this operation is quoting the SET-WORD! on the left, the
     ; evaluator isn't doing an assignment.  We have to do the SET here.
     ;
-    result: parse spec [gather [
+    let result: parse spec [gather [
         emit description: [text!
             | (fail "First item of OPERATION spec must be TEXT! description")
         ]
@@ -155,8 +154,11 @@ export operation: enfix func [
 
                 ; If we hit a tag, assume the parameters are finished and we're
                 ; defining things for the function spec (<local>s, <static>s)
-                ;
-                [ahead tag!, pos: <here>, (append args spread pos), to <end>, stop]
+                [
+                    ahead tag!
+                    let pos: <here>, (append args spread pos), to <end>
+                    stop
+                ]
 
                 ; Plain words specify the characters, just add them to the rule
                 ; for matching purposes but don't capture them.
@@ -165,6 +167,8 @@ export operation: enfix func [
 
                 ; Named parameters are in blocks, like `[location: Label]`.
                 [
+                    let param: (~)
+                    let type: (~)
                     subparse block! [
                         param: set-word!, (param: to word! param)
                         type: ['Label | 'Number]
