@@ -592,23 +592,23 @@ whitespace-vm-rule: [
 
         | Arithmetic/IMP [
             Arithmetic/add/command (
-                instruction: [do-arithmetic 'add]
+                instruction: [do-arithmetic quote add]  ; 'add unbound in Ren-C
             )
 
             | Arithmetic/subtract/command (
-                instruction: [do-arithmetic 'subtract]
+                instruction: [do-arithmetic quote subtract]
             )
 
             | Arithmetic/multiply/command (
-                instruction: [do-arithmetic 'multiply]
+                instruction: [do-arithmetic quote multiply]
             )
 
             | Arithmetic/divide/command (
-                instruction: [do-arithmetic 'divide]
+                instruction: [do-arithmetic quote divide]
             )
 
             | Arithmetic/modulo/command (
-                instruction: [do-arithmetic 'mod]
+                instruction: [do-arithmetic quote mod]
             )
         ]
 
