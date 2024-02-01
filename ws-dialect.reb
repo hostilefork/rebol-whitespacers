@@ -52,7 +52,7 @@ export category: func [
     ; Now, run a block which is a copy where all the SET-WORD!s are bound
     ; into the object, but only those top level set-words...nothing else.
     ;
-    do map-each item definition [
+    do inside definition map-each item definition [
         (has obj maybe match set-word! item) else [item]
     ]
 
@@ -144,7 +144,7 @@ export operation: enfix func [
             ; Have the rule we're making keep that first (not a rule match,
             ; just a synthesized-from-thin-air word...)
             ;
-            keep (spread compose [keep the (as word! name)])
+            keep (spread compose [keep the (as word! unbind name)])
 
             while [not <end>] any [  ; done processing spec if end hit
                 ;
@@ -213,14 +213,19 @@ export operation: enfix func [
         ; entire script, because that would make local copies of the
         ; variables like `program-start` and not see changes.  Review.
         ;
-        emit (name): (func args compose [(bind as group! body vm), return null])
+        emit (unbind name): (
+            func args overbind vm inside body bindable compose [
+                (as group! bindable body)
+                return ~null~  ; doesn't depend on NULL definition
+            ]
+        )
     ]]
 
     ; We want the instruction name WORD!, e.g. the PUSH in `[push 10]`, to look
     ; up to the function we just created.  So bind the rule into the object
     ; we made, whose `emit (name):` created a function variable by that name.
     ;
-    bind result.rule result
+    result.rule: overbind result result.rule
 
     return set name result
 ]
