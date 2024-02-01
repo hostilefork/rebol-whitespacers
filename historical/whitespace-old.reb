@@ -156,7 +156,7 @@ Rebol [
 ; some kind of hint in the header.  For now use an IMPORT statement that is
 ; only understood by Ren-C.
 ;
-import <redbol>
+import @redbol
 
 ;
 ; CONTROL SEQUENCE DEFINITIONS
