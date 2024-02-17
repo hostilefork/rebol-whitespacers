@@ -150,35 +150,35 @@ Arithmetic: category [
         {Addition}
         space space
     ][
-        do-arithmetic @add
+        do-arithmetic $add
     ]
 
     subtract: operation [
         {Subtraction}
         space tab
     ][
-        do-arithmetic @subtract
+        do-arithmetic $subtract
     ]
 
     multiply: operation [
         {Multiplication}
         space lf
     ][
-        do-arithmetic @multiply
+        do-arithmetic $multiply
     ]
 
     divide: operation [
         {Integer Division}
         tab space
     ][
-        do-arithmetic @divide
+        do-arithmetic $divide
     ]
 
     modulo: operation [
         {Modulo}
         tab tab
     ][
-        do-arithmetic @modulo
+        do-arithmetic $modulo
     ]
 ]
 
