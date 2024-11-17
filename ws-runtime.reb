@@ -52,9 +52,9 @@ export stack: []  ; start out with an empty stack
 
 export callstack: []  ; callstack is separate from data stack
 
-export heap: make map! []  ; a map is probably not ideal
+export heap: to map! []  ; a map is probably not ideal
 
-export labels: make map! []  ; maps Label strings to program character indices
+export labels: to map! []  ; maps Label strings to program character indices
 
 export category-rules: []  ; CATEGORY from %ws-dialect.reb adds to this list
 

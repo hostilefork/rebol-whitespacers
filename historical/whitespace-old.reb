@@ -363,10 +363,10 @@ stack: []
 callstack: []
 
 ; a map is probably not ideal
-heap: make map! []
+heap: to map! []
 
 ; from Label # to program character index
-labels: make map! []
+labels: to map! []
 
 binary-string-to-int: func [s [string!] /local pad] [
     ; debase makes bytes, so to use it we must pad to a
