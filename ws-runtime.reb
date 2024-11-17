@@ -65,8 +65,8 @@ whitespace-number-to-int: func [
     let sign: either space = first text [1] [-1]  ; first char indicates sign
 
     let bin: copy next text
-    replace/all bin space "0"
-    replace/all bin tab "1"
+    replace bin space "0"
+    replace bin tab "1"
 
     ; DEBASE makes bytes, we must pad to a multiple of 8 bits.  Better way?
     ;

@@ -381,9 +381,9 @@ whitespace-number-to-int: func [w [string!] /local bin] [
 
     ; rest is binary value
     bin: copy next w
-    replace/all bin space "0"
-    replace/all bin tab "1"
-    replace/all bin lf ""
+    replace bin space "0"
+    replace bin tab "1"
+    replace bin lf ""
     return sign * (binary-string-to-int bin)
 ]
 
