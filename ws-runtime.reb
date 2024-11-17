@@ -145,7 +145,7 @@ export interpreter-rule: [
                         print mold instruction
                     ]
 
-                    ensure null do instruction  ; null for "don't jump"
+                    ensure null eval instruction  ; null for "don't jump"
                 ]
             ] else [
                 if pass = 2 [  ; most instructions run on the second pass
@@ -153,13 +153,13 @@ export interpreter-rule: [
                         print mold instruction
                     ]
 
-                    jump-position: do instruction  ; null is no jump
+                    jump-position: eval instruction  ; null is no jump
 
                     execution-steps: execution-steps + 1
                 ]
             ]
 
-            maybe jump-position  ; SEEK sees void as do not jump
+            maybe jump-position  ; SEEK sees void as don'ot jump
         )
     ]
 ]

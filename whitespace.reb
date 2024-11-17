@@ -124,7 +124,7 @@ do-arithmetic: func [
 
     let right: take stack
     let left: take stack
-    insert stack do reduce [  ; we could also `reeval operator left right`
+    insert stack eval reduce [  ; we could also `reeval operator left right`
         operator left right
     ]
 ]
