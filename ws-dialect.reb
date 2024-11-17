@@ -28,32 +28,11 @@ export category: func [
     ; category.  e.g. just because the category has an ADD operation, we don't
     ; want to overwrite the binding of Rebol's ADD which we would use.
     ;
-    ; !!! This is part of a broad current open design question, being actively
-    ; thought through:
-    ;
-    ; https://forum.rebol.info/t/1442
-    ;
-    ; It should have a turnkey solution like what this code is doing.  We just
-    ; don't know exactly what to call it.
+    ; Hence we use CONSTRUCT here not MAKE OBJECT! (semantics in flux ATM)
 
-    ; First make an empty object with all the SET-WORD!s at the top level
-    ;
-    obj: make object! collect [
-        for-each item definition [
-            if set-word? item [
-                keep item
-                keep '~
-            ]
-        ]
-        keep 'rule:  ; we're going to add a rule
-        keep '~
-    ]
-
-    ; Now, run a block which is a copy where all the SET-WORD!s are bound
-    ; into the object, but only those top level set-words...nothing else.
-    ;
-    do inside definition map-each item definition [
-        (has obj maybe match set-word! item) else [item]
+    obj: construct compose [
+        (spread definition)
+        rule: ~
     ]
 
     ; We should really know which things are operations to ask them for their
