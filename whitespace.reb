@@ -14,7 +14,7 @@ Rebol [
     Type: fun
     Level: intermediate
 
-    Description: {
+    Description: --[
         This is an interpreter for the Whitespace language in the Ren-C branch
         of the Rebol 3 language:
 
@@ -28,9 +28,9 @@ Rebol [
         Due to being specification-driven in a homoiconic language (where data
         is code and code is data), it gains advantages in things like
         documentation generation.
-    }
+    ]--
 
-    Usage: {
+    Usage: --[
         Run with the argument of a file that you wish to process.  The
         extension determines the handling:
 
@@ -41,16 +41,16 @@ Rebol [
                Semicolons are used for comments to end of line.
 
         (.wsa for Whitespace Assembler format is not yet supported)
-    }
+    ]--
 
     History: [
-        0.1.0 [8-Oct-2009 {Private release to R3 Chat Group for commentary}]
+        0.1.0 [8-Oct-2009 -[Private release to R3 Chat Group for commentary]-]
 
-        0.2.0 [10-Jul-2010 {Public release as part of a collection of
-        whitespace interpreters in various languages}]
+        0.2.0 [10-Jul-2010 -[Public release as part of a collection of
+        whitespace interpreters in various languages]-]
 
-        0.3.0 [31-Jan-2019 {Converted to Ren-C with more ambitious concept
-        of dialecting the spec blended with the instruction handling code.}]
+        0.3.0 [31-Jan-2019 -[Converted to Ren-C with more ambitious concept
+        of dialecting the spec blended with the instruction handling code.]-]
     ]
 ]
 
@@ -68,48 +68,48 @@ vm: import %ws-runtime.reb  ; runtime stack, program counters, etc.
 Stack-Manipulation: category [
     IMP: [space]
 
-    description: {
+    description: --[
         Stack manipulation is one of the more common operations, hence the
         shortness of the IMP [space].
-    }
+    ]--
 
     push: operation [
-        {Push the number onto the stack}
+        "Push the number onto the stack"
         space [value: Number]
     ][
         insert stack value
     ]
 
     duplicate-top: operation [
-        {Duplicate the top item on the stack}
+        "Duplicate the top item on the stack"
         lf space
     ][
         insert stack first stack
     ]
 
     duplicate-indexed: operation [
-        {Copy Nth item on the stack (given by the arg) to top of stack}
+        "Copy Nth item on the stack (given by the arg) to top of stack"
         tab space [index: Number]
     ][
         insert stack pick stack index + 1
     ]
 
     swap-top-2: operation [
-        {Swap the top two items on the stack}
+        "Swap the top two items on the stack"
         lf tab
     ][
         move/part stack 1 1
     ]
 
     discard-top: operation [
-        {Discard the top item on the stack}
+        "Discard the top item on the stack"
         lf lf
     ][
         take stack
     ]
 
     slide-n-values: operation [
-        {Slide n items off the stack, keeping the top item}
+        "Slide n items off the stack, keeping the top item"
         tab lf [n: Number]
     ][
         take/part next stack n
@@ -133,7 +133,7 @@ do-arithmetic: func [
 Arithmetic: category [
     IMP: [tab space]
 
-    description: {
+    description: --[
         Arithmetic commands operate on the top two items on the stack, and
         replace them with the result of the operation. The first item pushed
         is considered to be left of the operator.
@@ -144,38 +144,38 @@ Arithmetic: category [
         using [space tab space], then on return, you can push the return
         value onto the top of the stack and use [space tab lf] to discard the
         local variables.
-    }
+    ]--
 
     add: operation [
-        {Addition}
+        "Addition"
         space space
     ][
         do-arithmetic $add
     ]
 
     subtract: operation [
-        {Subtraction}
+        "Subtraction"
         space tab
     ][
         do-arithmetic $subtract
     ]
 
     multiply: operation [
-        {Multiplication}
+        "Multiplication"
         space lf
     ][
         do-arithmetic $multiply
     ]
 
     divide: operation [
-        {Integer Division}
+        "Integer Division"
         tab space
     ][
         do-arithmetic $divide
     ]
 
     modulo: operation [
-        {Modulo}
+        "Modulo"
         tab tab
     ][
         do-arithmetic $modulo
@@ -186,16 +186,16 @@ Arithmetic: category [
 Heap-Access: category [
     IMP: [tab tab]
 
-    description: {
+    description: --[
         Heap access commands look at the stack to find the address of items
         to be stored or retrieved. To store an item, push the address then the
         value and run the store command. To retrieve an item, push the address
         and run the retrieve command, which will place the value stored in
         the location at the top of the stack.
-    }
+    ]--
 
     store: operation [
-        {Store}
+        "Store"
         space
     ][
         let value: take stack  ; spec does not explicitly specify removal
@@ -204,7 +204,7 @@ Heap-Access: category [
     ]
 
     retrieve: operation [
-        {Retrieve}
+        "Retrieve"
         tab
     ][
         let address: take stack  ; spec does not explicitly specify removal
@@ -217,15 +217,15 @@ Heap-Access: category [
 Flow-Control: category [
     IMP: [lf]
 
-    description: {
+    description: --[
         Flow control operations are also common. Subroutines are marked by
         labels, as well as the targets of conditional and unconditional jumps,
         by which loops can be implemented. Programs must be ended by means of
         [lf lf lf] so that the interpreter can exit cleanly.
-    }
+    ]--
 
     mark-location: operation [
-        {Mark a location in the program}
+        "Mark a location in the program"
         space space [label: Label]
         <local> address  ; could use LET, but test expanded spec feature
     ][
@@ -239,7 +239,7 @@ Flow-Control: category [
     ]
 
     call-subroutine: operation [
-        {Call a subroutine}
+        "Call a subroutine"
         space tab [label: Label]
     ][
         ; Call subroutine must be able to find the current parse location
@@ -251,14 +251,14 @@ Flow-Control: category [
     ]
 
     jump-to-label: operation [
-        {Jump unconditionally to a Label}
+        "Jump unconditionally to a Label"
         space lf [label: Label]
     ][
         return lookup-label-offset label
     ]
 
     jump-if-zero: operation [
-        {Jump to a Label if the top of the stack is zero}
+        "Jump to a Label if the top of the stack is zero"
         tab space [label: Label]
     ][
         ; must pop stack to make example work
@@ -268,7 +268,7 @@ Flow-Control: category [
     ]
 
     jump-if-negative: operation [
-        {Jump to a Label if the top of the stack is negative}
+        "Jump to a Label if the top of the stack is negative"
         tab tab [label: Label]
     ][
         ; must pop stack to make example work
@@ -278,7 +278,7 @@ Flow-Control: category [
     ]
 
     return-from-subroutine: operation [
-        {End a subroutine and transfer control back to the caller}
+        "End a subroutine and transfer control back to the caller"
         tab lf
     ][
         return take callstack else [
@@ -287,7 +287,7 @@ Flow-Control: category [
     ]
 
     end-program: operation [
-        {End the program}
+        "End the program"
         lf lf
     ][
         ; Requesting to jump to the address at the end of the program will be
@@ -301,7 +301,7 @@ Flow-Control: category [
 IO: category [
     IMP: [tab lf]
 
-    description: {
+    description: --[
         Finally, we need to be able to interact with the user. There are IO
         instructions for reading and writing numbers and individual characters.
         With these, string manipulation routines can be written (see examples
@@ -312,10 +312,10 @@ IO: category [
 
         Note: spec didn't say we should pop the stack when we output, but
         the sample proves we must!
-    }
+    ]--
 
     output-character-on-stack: operation [
-        {Output the character at the top of the stack}
+        "Output the character at the top of the stack"
         space space
     ][
         ; Note: ISSUE! is being merged with CHAR! to be something called TOKEN!
@@ -327,7 +327,7 @@ IO: category [
     ]
 
     output-number-on-stack: operation [
-        {Output the number at the top of the stack}
+        "Output the number at the top of the stack"
         space tab
     ][
         ; When a number is written out, there is no newline.  So we use
@@ -338,7 +338,7 @@ IO: category [
     ]
 
     read-character-to-location: operation [
-        {Read a character to the location given by the top of the stack}
+        "Read a character to the location given by the top of the stack"
         tab space
     ][
         ; !!! see notes above about ISSUE!/CHAR! duality, work-in-progress
@@ -349,7 +349,7 @@ IO: category [
     ]
 
     read-number-to-location: operation [
-        {Read a number to the location given by the top of the stack}
+        "Read a number to the location given by the top of the stack"
         tab tab
     ][
         let address: ensure integer! take stack
