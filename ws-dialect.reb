@@ -59,7 +59,7 @@ export category: func [
     return obj
 ]
 
-export operation: enfix func [
+export operation: infix func [
     return: [object!]
     'name [set-word!]
     spec [block!]
