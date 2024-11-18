@@ -361,7 +361,7 @@ IO: category [
 
 === PROCESS COMMAND-LINE ARGUMENTS ===
 
-strict: false
+strict: null
 filename: null
 
 ; Note that system.script.args is the arguments given to the script, e.g. if
@@ -380,7 +380,7 @@ parse system.script.args [while [not <end>] [
             | fail @["--verbose must be 0, 1, 2, or 3"]
         ]
     |
-    "--strict" (strict: true)
+    "--strict" (strict: okay)
     |
     "--max-steps" vm.max-steps: subparse text! [integer!]
     |
@@ -406,7 +406,7 @@ if not filename [
 ]
 
 if vm.verbose > 0 [
-    ===/visibility true  ; show the `=== xxxx ===` lines
+    ===:visibility 'on  ; show the `=== xxxx ===` lines
 ]
 
 
