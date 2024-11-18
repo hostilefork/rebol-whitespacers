@@ -58,6 +58,16 @@ export labels: to map! []  ; maps Label strings to program character indices
 
 export category-rules: []  ; CATEGORY from %ws-dialect.reb adds to this list
 
+; 1. DEBASE makes bytes, we must pad to a multiple of 8 bits.  Better way?
+;
+; 2. Rebol2, R3-Alpha, Red DEBASE gives back a result in big endian:
+;
+;        >> debase:base "1111111100000001" 2
+;        == #{FF01}
+;
+;        >> decode [BE +] #{FF01}
+;        == 65281
+;
 whitespace-number-to-int: func [
     text "whitespace encoded number (SPACE => 0, TAB => 1)"
         [text!]
@@ -68,10 +78,8 @@ whitespace-number-to-int: func [
     replace bin space "0"
     replace bin tab "1"
 
-    ; DEBASE makes bytes, we must pad to a multiple of 8 bits.  Better way?
-    ;
-    let pad: unspaced array:initial (8 - modulo (length of bin) 8) #"0"
-    return sign * to-integer debase/base unspaced [pad bin] 2
+    let pad: unspaced array:initial (8 - modulo (length of bin) 8) #"0"  ; [1]
+    return sign * decode [BE +] debase:base unspaced [pad bin] 2  ; [2]
 ]
 
 export lookup-label-offset: func [label [text!]] [
