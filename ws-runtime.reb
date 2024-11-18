@@ -70,7 +70,7 @@ whitespace-number-to-int: func [
 
     ; DEBASE makes bytes, we must pad to a multiple of 8 bits.  Better way?
     ;
-    let pad: unspaced array/initial (8 - modulo (length of bin) 8) #"0"
+    let pad: unspaced array:initial (8 - modulo (length of bin) 8) #"0"
     return sign * to-integer debase/base unspaced [pad bin] 2
 ]
 
@@ -135,7 +135,7 @@ export interpreter-rule: [
                     "S:" offset? program-start instruction-start
                     "E:" offset? program-start instruction-end
                     "->"
-                    mold copy/part instruction-start instruction-end
+                    mold copy:part instruction-start instruction-end
                 ]
             ]
 

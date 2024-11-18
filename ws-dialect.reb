@@ -39,13 +39,13 @@ export category: func [
     ; rule contribution.  But just assume any OBJECT! is an operation.
     ;
     obj.rule: compose [
-        (obj.imp)
+        (obj.IMP)
 
         collect any (collect [
             for-each [key val] obj [
                 if key == 'rule [continue]  ; what we're setting...
                 if object? val [
-                    keep/line val.rule
+                    keep:line val.rule
                 ]
             ]
         ])
@@ -61,7 +61,7 @@ export category: func [
 
 export operation: infix func [
     return: [object!]
-    'name [set-word!]
+    'name [set-word?]
     spec [block!]
     body [block!]
 ][

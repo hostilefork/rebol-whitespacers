@@ -98,7 +98,7 @@ Stack-Manipulation: category [
         "Swap the top two items on the stack"
         lf tab
     ][
-        move/part stack 1 1
+        move:part stack 1 1
     ]
 
     discard-top: operation [
@@ -112,7 +112,7 @@ Stack-Manipulation: category [
         "Slide n items off the stack, keeping the top item"
         tab lf [n: Number]
     ][
-        take/part next stack n
+        take:part next stack n
     ]
 ]
 
@@ -367,7 +367,7 @@ filename: null
 ; Note that system.script.args is the arguments given to the script, e.g. if
 ; you ran it from an interpreter with:
 ;
-;     >> do/args %whitespace.reb ["--verbose" "1" "examples/tutorial.ws"]
+;     >> do:args %whitespace.reb ["--verbose" "1" "examples/tutorial.ws"]
 ;
 ; The system.options.args would reflect the arguments the interpreter itself
 ; had been started up with.  These are the same when running the script from
@@ -394,7 +394,7 @@ parse system.script.args [while [not <end>] [
     ])
     filename: [
         subparse text! [file! | url!]  ; try decoding as FILE! or URL! first
-        | to-file/ text!  ; fall back to converting string TO-FILE
+        | /to-file text!  ; fall back to converting string TO-FILE
     ]
 ]]
 except [
