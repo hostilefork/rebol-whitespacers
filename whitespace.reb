@@ -432,7 +432,7 @@ program: parse filename [
 ; If those characters are left in the program, it is a fairly high overhead
 ; for all the code which does decoding to filter them out.  Pre-filter.
 
-remove-each ch program [
+remove-each 'ch program [
     all [ch != space, ch != tab, ch != lf]
 ]
 
