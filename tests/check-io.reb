@@ -31,9 +31,9 @@ parse system.script.args [while [not <end>] [
     |
     "--out" expected: read/ to-file/ text!
     |
-    subparse bad: text! ["--" (fail ["Unknown option:" bad])]
+    subparse bad: text! ["--" (panic ["Unknown option:" bad])]
     |
-    (if filename [fail "Only one filename permitted"])
+    (if filename [panic "Only one filename permitted"])
     filename: <any>  ; let whitespace.reb interpret (may be URL!, FILE!, etc.)
 ]]
 

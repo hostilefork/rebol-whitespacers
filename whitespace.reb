@@ -281,8 +281,8 @@ Flow-Control: category [
         "End a subroutine and transfer control back to the caller"
         tab lf
     ][
-        return take callstack else [
-            fail "RUNTIME ERROR: return with no callstack!"
+        return take callstack except [
+            panic "RUNTIME ERROR: return with no callstack!"
         ]
     ]
 
@@ -343,7 +343,7 @@ IO: category [
     ][
         ; !!! see notes above about ISSUE!/CHAR! duality, work-in-progress
         ;
-        let char: ask issue! else [fail "Character Input Was Required"]
+        let char: ask issue! else [panic "Character Input Was Required"]
         let address: ensure integer! take stack
         heap.(address): codepoint of char
     ]
@@ -353,7 +353,7 @@ IO: category [
         tab tab
     ][
         let address: ensure integer! take stack
-        let num: ask integer! else [fail "Integer Input Was Required"]
+        let num: ask integer! else [panic "Integer Input Was Required"]
         heap.(address): num
     ]
 ]
@@ -377,7 +377,7 @@ parse system.script.args [while [not <end>] [
     ["-v" | "--verbose"]
         vm.verbose: [
             "0" (0) | "1" (1) | "2" (2) | "3" (3)
-            | fail @["--verbose must be 0, 1, 2, or 3"]
+            | panic @["--verbose must be 0, 1, 2, or 3"]
         ]
     |
     "--strict" (strict: okay)
@@ -386,11 +386,11 @@ parse system.script.args [while [not <end>] [
     |
     subparse text! [
         ahead "--"
-        fail @["Unknown command line option"]
+        panic @["Unknown command line option"]
     ]
     |
     (if filename [
-        fail "Only one filename allowed on command line at present"
+        panic "Only one filename allowed on command line at present"
     ])
     filename: [
         subparse text! [file! | url!]  ; try decoding as FILE! or URL! first
@@ -398,11 +398,11 @@ parse system.script.args [while [not <end>] [
     ]
 ]]
 except [
-    fail "Invalid command line parameter"
+    panic "Invalid command line parameter"
 ]
 
 if not filename [
-    fail "No input file given"
+    panic "No input file given"
 ]
 
 if vm.verbose > 0 [
@@ -416,11 +416,11 @@ program: parse filename [
     thru [
         ".ws" <end> (as text! read filename)
         | ".wsw" <end> (unspaced load filename)  ; "whitespace words"
-        | ".wsa" <end> (fail "WSA support not implemented yet")
+        | ".wsa" <end> (panic "WSA support not implemented yet")
     ]
 ] except [
     if strict [
-        fail "Only `.ws`, `.wsa`, and `.wsw` formats supported in strict mode"
+        panic "Only `.ws`, `.wsa`, and `.wsw` formats supported in strict mode"
     ]
     as text! read filename  ; tolerate
 ]
@@ -452,8 +452,9 @@ if vm.verbose >= 1 [
 ; know if all the constructions are valid before we start running.
 
 vm.pass: 1
-parse program vm.interpreter-rule except [
-    fail "INVALID INPUT"
+parse program vm.interpreter-rule except e -> [
+    print "INVALID INPUT"  ; custom error handling would go here
+    panic e
 ]
 
 if vm.verbose >= 1 [
@@ -468,8 +469,9 @@ if vm.verbose >= 1 [
 ; like whitespace, where the parse position acts as the program counter.
 
 vm.pass: 2
-parse program vm.interpreter-rule except [
-    fail "UNEXPECTED TERMINATION (Internal Error)"
+parse program vm.interpreter-rule except e -> [
+    print "UNEXPECTED TERMINATION"  ; custom error handling would go here
+    panic e
 ]
 
 

@@ -94,7 +94,7 @@ jobs:
     # sort of "domain specific language" for writing "Whitespace-like"
     # interpreters.
     #
-    # If the interpreter FAILs due to an internal error it will return an exit
+    # If the interpreter PANICs due to an internal error it returns an exit
     # code of 1, and 0 returned on success.  But we also want to check the
     # output matches what was expected.  To do that in a cross-platform way,
     # use Ren-C CALL to invoke a Ren-C subprocess to run the interpreter,

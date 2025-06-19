@@ -83,7 +83,7 @@ export operation: infix func [
     ;
     let result: parse spec [gather [
         emit description: [text!
-            | (fail "First item of OPERATION spec must be TEXT! description")
+            | (panic "First item of OPERATION spec must be TEXT! description")
         ]
 
         ; The rule's job is to match a whitespace sequence and generate a
@@ -166,9 +166,9 @@ export operation: infix func [
                 ]
 
                 ; When nothing matches, it's an unexpected thing in the spec.
-                ; The FAIL combinator should implicate the current input spot.
+                ; PANIC combinator should implicate the current input spot.
                 ;
-                fail @["Malformed OPERATION spec"]
+                panic @["Malformed OPERATION spec"]
             ]
         ]
 

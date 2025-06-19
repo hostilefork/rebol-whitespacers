@@ -84,7 +84,7 @@ whitespace-number-to-int: func [
 
 export lookup-label-offset: func [label [text!]] [
     return select labels label else [
-        fail ["RUNTIME ERROR: Jump to undefined Label" mold label]
+        panic ["RUNTIME ERROR: Jump to undefined Label" mold label]
     ]
 ]
 
@@ -127,7 +127,7 @@ export interpreter-rule: [
         ; default and alternates only with |.  ANY does alternates and does
         ; not require a |.)
         ;
-        let instruction: [any (category-rules) | (fail "UNKNOWN OPERATION")]
+        let instruction: [any (category-rules) | (panic "UNKNOWN OPERATION")]
 
         instruction-end: <here>  ; also capture position at end of instruction
 
