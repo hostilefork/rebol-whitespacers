@@ -1,20 +1,20 @@
 Rebol [
-    Title: "Whitespace Interpreter"
-    Purpose: "Whitespace Language Written as a Rebol 3 Parse Dialect"
+    title: "Whitespace Interpreter"
+    purpose: "Whitespace Language Written as a Rebol 3 Parse Dialect"
 
-    Author: "Hostile Fork"
-    Home: http://github.com/hostilefork/whitespacers/
-    License: mit
+    author: "Hostile Fork"
+    home: http://github.com/hostilefork/whitespacers/
+    license: mit
 
-    File: %whitespace.reb
-    Date: 31-Jan-2019
-    Version: 0.3.0
+    file: %whitespace.reb
+    date: 31-Jan-2019
+    version: 0.3.0
 
     ; Header conventions: http://www.rebol.org/one-click-submission-help.r
-    Type: fun
-    Level: intermediate
+    type: module
+    level: intermediate
 
-    Description: --[
+    description: --[
         This is an interpreter for the Whitespace language in the Ren-C branch
         of the Rebol 3 language:
 
@@ -30,7 +30,7 @@ Rebol [
         documentation generation.
     ]--
 
-    Usage: --[
+    usage: --[
         Run with the argument of a file that you wish to process.  The
         extension determines the handling:
 
@@ -43,7 +43,7 @@ Rebol [
         (.wsa for Whitespace Assembler format is not yet supported)
     ]--
 
-    History: [
+    history: [
         0.1.0 [8-Oct-2009 -[Private release to R3 Chat Group for commentary]-]
 
         0.2.0 [10-Jul-2010 -[Public release as part of a collection of

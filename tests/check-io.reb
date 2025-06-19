@@ -1,8 +1,8 @@
 Rebol [
-    Title: --[Whitespace Script IO Validator]--
-    File: %check-io.reb
+    title: --[Whitespace Script IO Validator]--
+    file: %check-io.reb
 
-    Description: --[
+    description: --[
         This is for feeding a whitespace script's input and output files and
         making sure the output matches what was expected for the input.  It
         drives the process using the CALL facility...feeding data in and out
@@ -10,7 +10,7 @@ Rebol [
         so doing shell-specific commands for diffing etc. are not necessary.
     ]--
 
-    Notes: --[
+    notes: --[
      A. Unfortunately, the whitespace sample programs from the reference
         interpreter seem to have standardized on the Windows line ending
         convention of CR LF.  This is considered a "foreign" codec by Ren-C:

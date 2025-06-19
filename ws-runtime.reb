@@ -1,11 +1,11 @@
 Rebol [
-    Title: "Whitespace Interpreter Runtime"
-    File: %ws-runtime.reb
+    title: "Whitespace Interpreter Runtime"
+    file: %ws-runtime.reb
 
-    Type: module
-    Name: Whitespace-Runtime
+    type: module
+    name: Whitespace-Runtime
 
-    Description: --[
+    description: --[
         This (ab)uses the PARSE dialect to act as an interpreter where
         the parsing position is the program counter.  It leverages that
         PARSE has the ability to mark and seek input positions in a

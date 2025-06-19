@@ -1,11 +1,11 @@
 Rebol [
-    Title: "Common Definitions for Whitespace Scripts"
-    File: %ws-common.reb
+    title: "Common Definitions for Whitespace Scripts"
+    file: %ws-common.reb
 
-    Type: Module
-    Name: Whitespace-Common
+    type: module
+    name: Whitespace-Common
 
-    Description: --[
+    description: --[
         With the advent of modularization, you are not supposed to push
         declarations into the "global" contexts like `lib` or `user`.
         So to make definitions that are seen by all the whitespace

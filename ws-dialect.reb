@@ -1,11 +1,11 @@
 Rebol [
-    Title: "Whitespacer Implementation Dialect"
-    File: %ws-dialect.reb
+    title: "Whitespacer Implementation Dialect"
+    file: %ws-dialect.reb
 
-    Type: module
-    Name: Whitespace-Dialect
+    type: module
+    name: Whitespace-Dialect
 
-    Description: --[
+    description: --[
         Our goal is to streamline the implementation by bending Ren-C into
         something that feels like *a programming language designed specially
         for writing whitespace implementations*.  This methodology for putting
