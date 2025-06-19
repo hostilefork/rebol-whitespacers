@@ -29,9 +29,9 @@ expected: #{}
 filename: null
 
 parse system.script.args [while [not <end>] [
-    "--in" input: read/ to-file/ text!
+    "--in" input: /read /to-file text!
     |
-    "--out" expected: read/ to-file/ text!
+    "--out" expected: /read /to-file text!
     |
     subparse bad: text! ["--" (panic ["Unknown option:" bad])]
     |

@@ -145,7 +145,7 @@ export operation: infix func [
                     let param: (~)
                     let type: (~)
                     subparse block! [
-                        param: set-word!, (param: to word! param)
+                        param: /resolve set-word?/
                         type: ['Label | 'Number]
                     ]
 
