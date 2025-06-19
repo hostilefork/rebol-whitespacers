@@ -8,8 +8,10 @@ Rebol [
         drives the process using the CALL facility...feeding data in and out
         through pipe mechanics.  This is useful due to being cross-platform,
         so doing shell-specific commands for diffing etc. are not necessary.
+    ]--
 
-        Unfortunately, the whitespace sample programs from the reference
+    Notes: --[
+     A. Unfortunately, the whitespace sample programs from the reference
         interpreter seem to have standardized on the Windows line ending
         convention of CR LF.  This is considered a "foreign" codec by Ren-C:
 
@@ -37,7 +39,7 @@ parse system.script.args [while [not <end>] [
     filename: <any>  ; let whitespace.reb interpret (may be URL!, FILE!, etc.)
 ]]
 
-actual: #{}  ; use BINARY! to avoid text translations
+actual: #{}  ; use BINARY! to avoid text translations [A]
 
 call:input:output [
     (system.options.boot) whitespace.reb (filename)
@@ -47,10 +49,8 @@ print as text! actual
 
 if expected <> actual [
     print "!!! OUTPUT MISMATCH, RECEIVED:"
-    print ^actual
+    print @actual
     print "!!! EXPECTED:"
-    print ^expected
+    print @expected
     quit 1
 ]
-
-quit 0
