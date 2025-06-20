@@ -377,7 +377,7 @@ binary-string-to-int: func [s [string!] /local pad] [
 
 whitespace-number-to-int: func [w [string!] /local bin] [
     ; first character indicates sign
-    sign: either space == first w [1] [-1]
+    sign: either space = first w [1] [-1]
 
     ; rest is binary value
     bin: copy next w
@@ -698,8 +698,8 @@ whitespace-vm-rule: [
             ; were before this code
             next-instruction: instruction-end
 
-            either 'mark-location == first instruction [
-                if (pass == 1) [
+            either 'mark-location = first instruction [
+                if (pass = 1) [
                     if debug-steps [
                         print ["(" mold instruction ")"]
                     ]
@@ -711,13 +711,13 @@ whitespace-vm-rule: [
                     do instruction
                 ]
             ] [
-                if (pass == 2) [
+                if (pass = 2) [
                     if debug-steps [
                         print ["(" mold instruction ")"]
                     ]
 
                     ; most instructions run on the second pass...
-                    either 'end-program == first instruction [
+                    either 'end-program = first instruction [
                         next-instruction: tail program-start
                     ] [
                         result: do instruction
