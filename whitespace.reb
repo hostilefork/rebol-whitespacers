@@ -318,11 +318,7 @@ IO: category [
         "Output the character at the top of the stack"
         space space
     ][
-        ; Note: ISSUE! is being merged with CHAR! to be something called TOKEN!
-        ; So `#a` acts as what `#"a"` was in historical Rebol.  This is a work
-        ; in progress and the renaming has not yet been done.
-        ;
-        write-stdout make issue! first stack
+        write-stdout make rune! first stack
         take stack
     ]
 
@@ -341,9 +337,7 @@ IO: category [
         "Read a character to the location given by the top of the stack"
         tab space
     ][
-        ; !!! see notes above about ISSUE!/CHAR! duality, work-in-progress
-        ;
-        let char: ask issue! else [panic "Character Input Was Required"]
+        let char: ask rune! else [panic "Character Input Was Required"]
         let address: ensure integer! take stack
         heap.(address): codepoint of char
     ]
