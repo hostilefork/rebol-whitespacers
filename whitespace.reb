@@ -234,7 +234,7 @@ Flow-Control: category [
         ; right at the beginning.  Must add 1 to be in the Redbol 1-based
         ; series indexing mode (what PARSE's SEEK expects to use)
         ;
-        address: 1 + offset? program-start instruction-end
+        address: 1 + measure program-start instruction-end
         labels.(label): address
     ]
 
@@ -245,7 +245,7 @@ Flow-Control: category [
         ; Call subroutine must be able to find the current parse location
         ; (a.k.a. program counter) so it can put it in the callstack.
         ;
-        let current-offset: 1 + offset? program-start instruction-end
+        let current-offset: 1 + measure program-start instruction-end
         insert callstack current-offset
         return lookup-label-offset label
     ]

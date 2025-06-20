@@ -140,8 +140,8 @@ export interpreter-rule: [
 
             if verbose >= 3 [
                 print [
-                    "S:" offset? program-start instruction-start
-                    "E:" offset? program-start instruction-end
+                    "S:" measure program-start instruction-start
+                    "E:" measure program-start instruction-end
                     "->"
                     mold copy:part instruction-start instruction-end
                 ]

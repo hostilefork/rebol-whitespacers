@@ -634,7 +634,7 @@ whitespace-vm-rule: [
                 ; current parse location (a.k.a. program counter)
                 ; so it can put it in the callstack
                 instruction: compose [
-                    call-subroutine (offset? instruction-start program-start)
+                    call-subroutine (measure instruction-start program-start)
                 ]
             )
 
@@ -687,8 +687,8 @@ whitespace-vm-rule: [
             ; This debugging output is helpful if there are malfunctions
             if extended-debug-steps [
                 print [
-                    "S:" offset? program-start instruction-start
-                    "E:" offset? program-start instruction-end
+                    "S:" measure program-start instruction-start
+                    "E:" measure program-start instruction-end
                     "->"
                     mold copy/part instruction-start instruction-end
                 ]
@@ -705,7 +705,7 @@ whitespace-vm-rule: [
                     ]
 
                     ; now we capture the end of this instruction...
-                    repend instruction [offset? program-start instruction-end]
+                    repend instruction [measure program-start instruction-end]
 
                     ; the first pass does the Label markings...
                     do instruction
