@@ -153,7 +153,7 @@ export interpreter-rule: [
                         print mold instruction
                     ]
 
-                    ensure null eval instruction  ; null for "don't jump"
+                    verify [null? eval instruction]  ; null for "don't jump"
                 ]
             ] else [
                 if pass = 2 [  ; most instructions run on the second pass
