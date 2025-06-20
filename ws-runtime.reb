@@ -167,7 +167,7 @@ export interpreter-rule: [
                 ]
             ]
 
-            maybe jump-position  ; SEEK sees void as don'ot jump
+            opt jump-position  ; SEEK sees void as don'ot jump
         )
     ]
 ]
