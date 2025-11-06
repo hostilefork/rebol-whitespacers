@@ -30,7 +30,7 @@ export category: func [
     ;
     ; Hence we use CONSTRUCT here not MAKE OBJECT! (semantics in flux ATM)
 
-    obj: construct compose [
+    obj: construct inside definition compose '[
         (spread definition)
         rule: ~
     ]
@@ -61,7 +61,7 @@ export category: func [
 
 export operation: infix func [
     return: [object!]
-    'name [set-word?]
+    @name [set-word?]
     spec [block!]
     body [block!]
 ][
@@ -204,7 +204,7 @@ export operation: infix func [
     ; up to the function we just created.  So bind the rule into the object
     ; we made, whose `emit (name):` created a function variable by that name.
     ;
-    result.rule: overbind result result.rule
+    result.rule: bind result result.rule
 
     return set name result
 ]
