@@ -109,6 +109,7 @@ jobs:
         r3 tests/check-io.r examples/count.wsw --out tests/count.out
 
     - name: Hello World (also tests running from URL!)
+      if: false  # !!! currently READ of https is broken due to TLS ciphers
       run: |
         r3 tests/check-io.r https://raw.githubusercontent.com/hostilefork/rebol-whitespacers/main/examples/hworld.ws --out tests/hworld.out
 
