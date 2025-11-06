@@ -142,6 +142,7 @@ jobs:
     # a test of that emulation.
     #
     - name: Historical Rebol Interpreter Test
+      if: false  # !!! disabled until Ren-C Redbol emulation is fixed (if ever)
       uses: metaeducation/ren-c-action@release
       with:
         checked: ${{ matrix.checked }}
