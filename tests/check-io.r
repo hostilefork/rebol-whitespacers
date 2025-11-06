@@ -33,7 +33,11 @@ parse system.script.args [while [not <end>] [
     |
     "--out" expected: /read /to-file text!
     |
-    subparse bad: text! ["--" (panic ["Unknown option:" bad])]
+    subparse text! [
+        "--"  ; if something else looking like a switch matches, panic
+        let bad: across to <end>
+        (panic ["Unknown option:" bad])
+    ]
     |
     (if filename [panic "Only one filename permitted"])
     filename: <any>  ; let whitespace.r interpret (may be URL!, FILE!, etc.)
