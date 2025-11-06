@@ -123,7 +123,7 @@ export operation: infix func [
             ; Have the rule we're making keep that first (not a rule match,
             ; just a synthesized-from-thin-air word...)
             ;
-            keep (spread compose [keep the (as word! unbind name)])
+            keep (spread compose [keep the (unbind unchain name)])
 
             while [not <end>] any [  ; done processing spec if end hit
                 ;
