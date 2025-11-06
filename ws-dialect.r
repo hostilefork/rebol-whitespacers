@@ -1,6 +1,6 @@
 Rebol [
     title: "Whitespacer Implementation Dialect"
-    file: %ws-dialect.reb
+    file: %ws-dialect.r
 
     type: module
     name: Whitespace-Dialect
@@ -13,9 +13,9 @@ Rebol [
     ]--
 ]
 
-import %ws-common.reb
+import %ws-common.r
 
-vm: import %ws-runtime.reb
+vm: import %ws-runtime.r
 
 
 export category: func [
@@ -184,13 +184,13 @@ export operation: infix func [
         ; object representing the virtual machine).  Review this especially
         ; in light of implications for hooked RETURNs being called implicitly:
         ;
-        ; https://forum.rebol.info/t/1656
+        ; https://rebol.metaeducation.com/t/1656
         ;
         ; !!! We bind the body into the VM, so that the author of the function
         ; can just say `stack` instead of `vm.stack`.  This works better than
-        ; having them do a top-level import of %ws-runtime.reb for the
-        ; entire script, because that would make local copies of the
-        ; variables like `program-start` and not see changes.  Review.
+        ; having them do a top-level import of %ws-runtime.r for the entire
+        ; script, because that would make local copies of the variables like
+        ; `program-start` and not see changes.  Review.
         ;
         emit (unbind name): (
             func args overbind vm inside body bindable compose [

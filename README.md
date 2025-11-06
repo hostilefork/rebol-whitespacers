@@ -22,8 +22,8 @@ the Rebol language itself so that it becomes customized to seem like
 *a language designed for implementing whitespace interpreters*.
 
 A dialect is made as a library which defines a CATEGORY and OPERATION.  This
-allows the `whitespace.reb` code to be written in a way that naturally
-mirrors the specification.
+allows the `whitespace.r` code to be written in a way that naturally mirrors
+the specification.
 
 Here is a small piece of that from the "Stack Manipulation" category:
 
@@ -90,7 +90,7 @@ emulation.
 ## Discuss on the Forum
 
 Discussions on this and other topics are conducted on the
-[Ren-C Forum](https://forum.rebol.info/).
+[Ren-C Forum](https://rebol.metaeducation.com).
 
 ## Useful Links
 

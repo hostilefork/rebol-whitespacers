@@ -1,6 +1,6 @@
 Rebol [
     title: --[Whitespace Script IO Validator]--
-    file: %check-io.reb
+    file: %check-io.r
 
     description: --[
         This is for feeding a whitespace script's input and output files and
@@ -36,13 +36,13 @@ parse system.script.args [while [not <end>] [
     subparse bad: text! ["--" (panic ["Unknown option:" bad])]
     |
     (if filename [panic "Only one filename permitted"])
-    filename: <any>  ; let whitespace.reb interpret (may be URL!, FILE!, etc.)
+    filename: <any>  ; let whitespace.r interpret (may be URL!, FILE!, etc.)
 ]]
 
 actual: #{}  ; use BINARY! to avoid text translations [A]
 
 call:input:output [
-    (system.options.boot) whitespace.reb (filename)
+    (system.options.boot) whitespace.r (filename)
 ] input actual
 
 print as text! actual

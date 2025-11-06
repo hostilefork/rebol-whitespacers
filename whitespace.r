@@ -6,7 +6,7 @@ Rebol [
     home: http://github.com/hostilefork/whitespacers/
     license: mit
 
-    file: %whitespace.reb
+    file: %whitespace.r
     date: 31-Jan-2019
     version: 0.3.0
 
@@ -54,11 +54,11 @@ Rebol [
     ]
 ]
 
-import %ws-common.reb
+import %ws-common.r
 
-import %ws-dialect.reb  ; defines the CATEGORY and OPERATION used below
+import %ws-dialect.r  ; defines the CATEGORY and OPERATION used below
 
-vm: import %ws-runtime.reb  ; runtime stack, program counters, etc.
+vm: import %ws-runtime.r  ; runtime stack, program counters, etc.
 
 
 === CONTROL SEQUENCE DEFINITIONS ===
@@ -361,7 +361,7 @@ filename: null
 ; Note that system.script.args is the arguments given to the script, e.g. if
 ; you ran it from an interpreter with:
 ;
-;     >> do:args %whitespace.reb ["--verbose" "1" "examples/tutorial.ws"]
+;     >> do:args %whitespace.r ["--verbose" "1" "examples/tutorial.ws"]
 ;
 ; The system.options.args would reflect the arguments the interpreter itself
 ; had been started up with.  These are the same when running the script from

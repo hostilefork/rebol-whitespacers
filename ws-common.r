@@ -1,6 +1,6 @@
 Rebol [
     title: "Common Definitions for Whitespace Scripts"
-    file: %ws-common.reb
+    file: %ws-common.r
 
     type: module
     name: Whitespace-Common

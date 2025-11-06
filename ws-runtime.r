@@ -1,6 +1,6 @@
 Rebol [
     title: "Whitespace Interpreter Runtime"
-    file: %ws-runtime.reb
+    file: %ws-runtime.r
 
     type: module
     name: Whitespace-Runtime
@@ -13,7 +13,7 @@ Rebol [
     ]--
 ]
 
-import %ws-common.reb
+import %ws-common.r
 
 
 === RUNTIME VIRTUAL MACHINE OPERATIONS ===
@@ -27,7 +27,7 @@ import %ws-common.reb
 ; module gets a copy on import and doesn't see changes after that.  This is
 ; fine for blocks or objects that are passed by reference, but not things
 ; like positions that change or immediates like verbose.  The importer must
-; access these through `vm: import %ws-runtime.reb` and then `vm.verbose`
+; access these through `vm: import %ws-runtime.r` and then `vm.verbose`
 ;
 verbose: 0
 
@@ -56,7 +56,7 @@ export heap: to map! []  ; a map is probably not ideal
 
 export labels: to map! []  ; maps Label strings to program character indices
 
-export category-rules: []  ; CATEGORY from %ws-dialect.reb adds to this list
+export category-rules: []  ; CATEGORY from %ws-dialect.r adds to this list
 
 ; 1. DEBASE makes bytes, we must pad to a multiple of 8 bits.  Better way?
 ;
