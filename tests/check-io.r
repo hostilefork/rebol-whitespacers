@@ -40,7 +40,7 @@ parse system.script.args [while [not <end>] [
     ]
     |
     (if filename [panic "Only one filename permitted"])
-    filename: <any>  ; let whitespace.r interpret (may be URL!, FILE!, etc.)
+    filename: one  ; let whitespace.r interpret (may be URL!, FILE!, etc.)
 ]]
 
 actual: #{}  ; use BINARY! to avoid text translations [A]
