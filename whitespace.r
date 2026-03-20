@@ -444,10 +444,10 @@ if vm.verbose >= 1 [
 ; know if all the constructions are valid before we start running.
 
 vm.pass: 1
-parse program vm.interpreter-rule except e -> [
+parse program vm.interpreter-rule except (e -> [
     print "INVALID INPUT"  ; custom error handling would go here
     panic e
-]
+])
 
 if vm.verbose >= 1 [
     print mold labels
@@ -461,10 +461,10 @@ if vm.verbose >= 1 [
 ; like whitespace, where the parse position acts as the program counter.
 
 vm.pass: 2
-parse program vm.interpreter-rule except e -> [
+parse program vm.interpreter-rule except (e -> [
     print "UNEXPECTED TERMINATION"  ; custom error handling would go here
     panic e
-]
+])
 
 
 === PROGRAM END ENCOUNTERED ===
