@@ -389,8 +389,7 @@ parse system.script.args [while [not <end>] [
         subparse text! [file! | url!]  ; try decoding as FILE! or URL! first
         | /to-file text!  ; fall back to converting string TO-FILE
     ]
-]]
-except [
+]] except [
     panic "Invalid command line parameter"
 ]
 
