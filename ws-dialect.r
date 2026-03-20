@@ -42,8 +42,8 @@ export category: func [
         (obj.IMP)
 
         collect any (collect [
-            for-each [key val] obj [
-                if key = 'rule [continue]  ; what we're setting...
+            for-each [key ^val] obj [
+                if ^key = 'rule [continue]  ; what we're setting...
                 if object? val [
                     keep:line val.rule
                 ]
