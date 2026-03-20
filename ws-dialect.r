@@ -205,5 +205,5 @@ export operation: infix func [
     ;
     result.rule: bind result result.rule
 
-    return set name result
+    return set unchain name result
 ]
