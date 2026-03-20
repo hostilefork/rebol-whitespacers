@@ -130,7 +130,7 @@ export operation: infix func [
                 ; If we hit a tag, assume the parameters are finished and we're
                 ; defining things for the function spec (<local>s, <static>s)
                 [
-                    ahead tag!
+                    ahead tag!  ; !!! update for FENCE!
                     let pos: <here>, (append args spread pos), to <end>
                     stop
                 ]

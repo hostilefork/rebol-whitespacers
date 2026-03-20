@@ -227,14 +227,13 @@ Flow-Control: category [
     mark-location: operation [
         "Mark a location in the program"
         space space [label: Label]
-        <local> address  ; could use LET, but test expanded spec feature
     ][
         ; Capture the position *after* this instruction.  We calculate
         ; relative to program-start in case the whitespace data did not start
         ; right at the beginning.  Must add 1 to be in the Redbol 1-based
         ; series indexing mode (what PARSE's SEEK expects to use)
         ;
-        address: 1 + measure program-start instruction-end
+        let address: 1 + measure program-start instruction-end
         labels.(label): address
     ]
 
