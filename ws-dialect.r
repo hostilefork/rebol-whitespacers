@@ -192,10 +192,10 @@ export operation: infix func [
         ; `program-start` and not see changes.  Review.
         ;
         emit (unbind name): (
-            func args overbind vm inside body bindable compose [
+            func args (overbind vm inside body bindable compose [
                 (as group! bindable body)
                 return ~null~  ; doesn't depend on NULL definition
-            ]
+            ])
         )
     ]]
 
