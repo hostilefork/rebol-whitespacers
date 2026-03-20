@@ -21,7 +21,6 @@ vm: import %ws-runtime.r
 export category: func [
     return: [object!]
     definition [block!]
-    <local> obj
 ][
     ; We want the category to create an object, but we don't want the fields of
     ; the object to be binding inside the function bodies defined in the
@@ -30,7 +29,7 @@ export category: func [
     ;
     ; Hence we use CONSTRUCT here not MAKE OBJECT! (semantics in flux ATM)
 
-    obj: construct inside definition compose '[
+    let obj: construct inside definition compose '[
         (spread definition)
         rule: ~
     ]
