@@ -167,7 +167,7 @@ export operation: infix func [
                 ; When nothing matches, it's an unexpected thing in the spec.
                 ; PANIC combinator should implicate the current input spot.
                 ;
-                panic @["Malformed OPERATION spec"]
+                panic "Malformed OPERATION spec"
             ]
         ]
 
