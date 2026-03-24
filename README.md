@@ -31,13 +31,13 @@ Here is a small piece of that from the "Stack Manipulation" category:
 Stack-Manipulation: category [
     IMP: [space]
 
-    description: {
+    description: --[
         Stack manipulation is one of the more common operations, hence the
         shortness of the IMP [space].
-    }
+    ]--
 
     push: operation [
-        {Push the number onto the stack}
+        "Push the number onto the stack}"
         space [value: Number]
     ][
         insert stack value
